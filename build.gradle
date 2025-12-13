@@ -1,0 +1,24 @@
+subprojects {
+  apply plugin: 'java-library'
+
+  repositories {
+    mavenCentral()
+  }
+
+  dependencies {
+    // So everyone gets JUnit
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.9.1'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+  }
+
+  test {
+    useJUnitPlatform()
+
+    testLogging {
+      events "passed", "skipped", "failed"
+      showStandardStreams = true
+
+      exceptionFormat "full" // To see assertion messages
+    }
+  }
+}

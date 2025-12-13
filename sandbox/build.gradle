@@ -1,0 +1,11 @@
+plugins {
+  id 'application' // Sandbox is app, not library
+}
+
+application {
+  mainClass = 'com.game.Main'
+}
+
+dependencies {
+  implementation project(':ecs')
+}
