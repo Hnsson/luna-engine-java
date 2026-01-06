@@ -1,0 +1,50 @@
+{
+  "startNode": "blacksmith_start",
+  "nodes": {
+    "blacksmith_start": {
+      "text": "That sword looks heavy.",
+      "options": [
+        {
+          "text": "I am strong enough.",
+          "targetId": "node_strength_response",
+          "conditionId": "is_warrior"
+        },
+        {
+          "text": "(Bribe 10g) Tell me about the cave.",
+          "targetId": "node_secret",
+          "conditionId": "has_gold_10"
+        },
+        {
+          "text": "Goodbye.",
+          "end": true
+        }
+      ]
+    },
+    "node_strength_response": {
+      "text": "Hah. Maybe you are.",
+      "options": [
+        {
+          "text": "Show me the sword.",
+          "targetId": "node_show_sword"
+        },
+        {
+          "text": "Never mind.",
+          "targetId": "blacksmith_start"
+        }
+      ]
+    },
+    "node_secret": {
+      "text": "Keep your voice down...",
+      "options": [
+        {
+          "text": "I am listening.",
+          "targetId": "node_cave_info"
+        },
+        {
+          "text": "On second thought, goodbye.",
+          "end": true
+        }
+      ]
+    }
+  }
+}

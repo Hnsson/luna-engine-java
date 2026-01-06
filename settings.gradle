@@ -1,4 +1,5 @@
 rootProject.name = 'luna-engine-java'
 include 'math'
 include 'ecs'
+include 'dialogue'
 include 'sandbox'

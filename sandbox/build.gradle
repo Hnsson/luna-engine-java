@@ -8,4 +8,9 @@ application {
 
 dependencies {
   implementation project(':ecs')
+  implementation project(':dialogue')
+}
+
+run {
+    standardInput = System.in
 }
