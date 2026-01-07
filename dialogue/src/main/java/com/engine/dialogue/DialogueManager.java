@@ -24,16 +24,16 @@ public class DialogueManager {
   public void registerGraph(String path) {
     DialogueGraph graph = DialogueLoader.load(path);
     if (graph != null) {
-        graphStore.put(graph.getStartNode(), graph);
-        System.out.println("Loaded Graph entry point: " + graph.getStartNode());
+      graphStore.put(graph.getStartNode(), graph);
+      System.out.println("Loaded Graph entry point: " + graph.getStartNode());
     }
   }
 
   public void startDialogue(String startNodeId) {
     DialogueGraph graph = graphStore.get(startNodeId);
     if (graph == null) {
-        System.err.println("Error: No graph found starting with ID: " + startNodeId);
-        return;
+      System.err.println("Error: No graph found starting with ID: " + startNodeId);
+      return;
     }
 
     this.activeGraph = graph;
@@ -58,16 +58,19 @@ public class DialogueManager {
 
   public void chooseOption(int optionIndex) {
     // Options like (0, 1, 2, ...)
-    if (activeNode == null || activeNode.getOptions() == null) return;
+    if (activeNode == null || activeNode.getOptions() == null)
+      return;
+
+    int internalIndex = optionIndex - 1;
 
     List<DialogueOption> options = activeNode.getOptions();
 
-    if (optionIndex < 0 || optionIndex >= options.size()) {
+    if (internalIndex < 0 || internalIndex >= options.size()) {
       System.out.println("Invalid choice.");
       return;
     }
 
-    DialogueOption selected = options.get(optionIndex);
+    DialogueOption selected = options.get(internalIndex);
 
     if (Boolean.TRUE.equals(selected.getEnd())) {
       System.out.println("[End of Conversation]");
@@ -79,7 +82,8 @@ public class DialogueManager {
   }
 
   private void printCurrentState() {
-    if (activeNode == null) return;
+    if (activeNode == null)
+      return;
 
     System.out.println("--------------------------------");
     System.out.println("NPC: " + activeNode.getText());
@@ -87,9 +91,9 @@ public class DialogueManager {
 
     List<DialogueOption> options = activeNode.getOptions();
     for (int i = 0; i < options.size(); i++) {
-        DialogueOption opt = options.get(i);
-        // In the future, check Conditions here!
-        System.out.println("[" + i + "] " + opt.getText());
+      DialogueOption opt = options.get(i);
+      // In the future, check Conditions here!
+      System.out.println("[" + (i + 1) + "] " + opt.getText());
     }
     System.out.println("--------------------------------");
   }

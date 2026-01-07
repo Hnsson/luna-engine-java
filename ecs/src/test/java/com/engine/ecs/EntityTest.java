@@ -13,17 +13,41 @@ class EntityTest {
   @BeforeEach
   void setUp() {
     // Reset the entity before every single test
-    entity = new Entity(1);
+    Entity.clear();
+    entity = new Entity();
   }
 
   @Test
   void testEntityCreation() {
-    Entity e1 = new Entity();
-    Entity e2 = new Entity(42);
+    Entity entity2 = new Entity();
 
-    // id defaults to 0 if not provided
-    assertEquals(0, e1.getID());
-    assertEquals(42, e2.getID());
+    // id is incremental
+    assertEquals(0, entity.getId());
+    assertEquals(1, entity2.getId());
+  }
+
+  @Test
+  void testDefaultNameGeneration() {
+    assertEquals("Entity_0", entity.getName(), "Default entity should be named 'Entity_' + ID");
+
+    Entity entity2 = new Entity(); // Should be ID 1 and name will be Entity_1
+    assertEquals("Entity_1", entity2.getName(), "Subsequent entities should increment the name index");
+  }
+
+  @Test
+  void testCustomNameCreation() {
+    Entity blacksmith = new Entity("Blacksmith");
+
+    assertEquals("Blacksmith", blacksmith.getName(), "Should use the provided custom name");
+    assertEquals(1, blacksmith.getId());
+  }
+
+  @Test
+  void testNullNameFallback() {
+    Entity nullNamedEntity = new Entity(null);
+
+    assertEquals(1, nullNamedEntity.getId());
+    assertEquals("Entity_1", nullNamedEntity.getName(), "Passing null should generate a default name");
   }
 
   @Test

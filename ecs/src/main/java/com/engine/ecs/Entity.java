@@ -5,40 +5,67 @@ import java.util.BitSet;
 import java.util.List;
 
 public class Entity {
-  private byte maxComponents = 32;
+  private static int nextId = 0;
+
+  private String name;
+  private final int id;
   private String startDialogueNodeId;
-  private Integer id;
+
+  private byte maxComponents = 32;
   private List<Component> components = new ArrayList<>();
   private BitSet activeComponents;
 
   public Entity() {
-    this.id = 0;
+    this.id = nextId++;
+    this.name = "Entity_" + this.id;
     this.components = new ArrayList<>();
     this.activeComponents = new BitSet(this.maxComponents);
   }
 
-  public Entity(Integer id) {
-    this.id = id;
+  public Entity(String name) {
+    this.id = nextId++;
+    if (name == null) {
+      this.name = "Entity_" + this.id;
+    } else {
+      this.name = name;
+    }
     this.components = new ArrayList<>();
     this.activeComponents = new BitSet(this.maxComponents);
   }
 
-  public Entity(String startDialogueNodeId) {
-    this.id = 0;
+  public Entity(String name, String startDialogueNodeId) {
+    this.id = nextId++;
+    if (name == null) {
+      this.name = "Entity_" + this.id;
+    } else {
+      this.name = name;
+    }
     this.components = new ArrayList<>();
     this.activeComponents = new BitSet(this.maxComponents);
     this.startDialogueNodeId = startDialogueNodeId;
   }
 
-  public int getID() {
+  public int getId() {
     return this.id;
+  }
+
+  public String getName() {
+    return this.name;
+  }
+
+  public String getDialogueNodeId() {
+    return this.startDialogueNodeId;
+  }
+
+  public static void clear() {
+    nextId = 0;
   }
 
   @SuppressWarnings("unchecked")
   public <T extends Component> T addComponent(T component) {
-    int typeID = ComponentRegistry.getComponentTypeID(component.getClass());
+    int typeId = ComponentRegistry.getComponentTypeID(component.getClass());
 
-    if (typeID >= this.maxComponents) {
+    if (typeId >= this.maxComponents) {
       throw new RuntimeException("Exceeded max component limit (" + String.valueOf(this.maxComponents) + ")");
     }
 
@@ -47,7 +74,7 @@ public class Entity {
     }
 
     this.components.add(component);
-    this.activeComponents.set(typeID);
+    this.activeComponents.set(typeId);
 
     System.out.println("Added component (" + component.getClass().getSimpleName() + ")");
 
@@ -55,8 +82,8 @@ public class Entity {
   }
 
   public <T extends Component> boolean hasComponent(Class<T> componentClass) {
-    int typeID = ComponentRegistry.getComponentTypeID(componentClass);
-    return this.activeComponents.get(typeID);
+    int typeId = ComponentRegistry.getComponentTypeID(componentClass);
+    return this.activeComponents.get(typeId);
   }
 
   public <T extends Component> T getComponent(Class<T> componentClass) {
@@ -68,14 +95,13 @@ public class Entity {
     return null;
   }
 
-  public String startDialogueNodeId() {
-    return this.startDialogueNodeId;
-  }
-
   public void init() {
   }
 
   public void eventHandler() {
+    for (Component cmp : this.components) {
+      cmp.eventHandler();
+    }
   }
 
   public void update() {
@@ -85,5 +111,8 @@ public class Entity {
   }
 
   public void render() {
+    for (Component cmp : this.components) {
+      cmp.render();
+    }
   }
 }

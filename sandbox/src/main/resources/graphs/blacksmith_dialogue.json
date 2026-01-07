@@ -5,7 +5,7 @@
       "text": "That sword looks heavy.",
       "options": [
         {
-          "text": "I am strong enough.",
+          "text": "[WARRIOR] I am strong enough.",
           "targetId": "node_strength_response",
           "conditionId": "is_warrior"
         },
@@ -21,7 +21,7 @@
       ]
     },
     "node_strength_response": {
-      "text": "Hah. Maybe you are.",
+      "text": "Hah. Maybe you are. But it takes more than muscle to swing this beauty.",
       "options": [
         {
           "text": "Show me the sword.",
@@ -33,8 +33,21 @@
         }
       ]
     },
+    "node_show_sword": {
+      "text": "*He hefts a massive greatsword onto the counter. It gleams with cold steel.* It is yours for a price, or perhaps a favor.",
+      "options": [
+        {
+          "text": "I will think about it.",
+          "targetId": "blacksmith_start"
+        },
+        {
+          "text": "I must go.",
+          "end": true
+        }
+      ]
+    },
     "node_secret": {
-      "text": "Keep your voice down...",
+      "text": "Keep your voice down... The guard captain has ears everywhere.",
       "options": [
         {
           "text": "I am listening.",
@@ -42,6 +55,19 @@
         },
         {
           "text": "On second thought, goodbye.",
+          "end": true
+        }
+      ]
+    },
+    "node_cave_info": {
+      "text": "The old mines to the north. They say the goblins dug too deep and found something... ancient. I wouldn't go there without a torch.",
+      "options": [
+        {
+          "text": "Thanks for the information.",
+          "targetId": "blacksmith_start"
+        },
+        {
+          "text": "I'm heading there now.",
           "end": true
         }
       ]

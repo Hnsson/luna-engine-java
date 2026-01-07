@@ -4,6 +4,9 @@ import com.engine.ecs.Entity;
 import com.engine.ecs.components.Transform;
 
 import com.engine.dialogue.DialogueManager;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class Main {
@@ -16,9 +19,11 @@ public class Main {
 
     if (player.hasComponent(Transform.class)) {
       System.out.println("Player successfully added a Transform component!");
+
+      player.getComponent(Transform.class).velocity.x = 1;
+      System.out.println(player.getComponent(Transform.class).toString());
       for (int i = 0; i < 20; i++) {
         player.update();
-        player.getComponent(Transform.class).velocity.x = 1;
         System.out.println(player.getComponent(Transform.class).toString());
       }
     }
@@ -33,15 +38,8 @@ public class Main {
       System.out.println("Enemy successfully added a Transform component!");
       for (int i = 0; i < 20; i++) {
         enemy.update();
-        // enemy.getComponent(Transform.class).velocity.x = 1;
         System.out.println(enemy.getComponent(Transform.class).toString());
       }
-    }
-
-    if (player.getComponent(Transform.class) == enemy.getComponent(Transform.class)) {
-      System.out.println("Yo");
-    } else {
-      System.out.println("No");
     }
 
     // Dialogue
@@ -49,19 +47,63 @@ public class Main {
     Scanner scanner = new Scanner(System.in);
 
     manager.registerGraph("/graphs/blacksmith_dialogue.json");
-    Entity blacksmith_NPC = new Entity("blacksmith_start");
+    manager.registerGraph("/graphs/cityguard_dialogue.json");
 
-    manager.startDialogue(blacksmith_NPC.startDialogueNodeId());
+    Entity blacksmith_NPC = new Entity("Brokk Ironjaw", "blacksmith_start");
+    Entity cityguard_NPC = new Entity("Garrett", "gate_guard_start");
 
-    while (manager.isActive()) {
-      System.out.print("Your choice: ");
+    List<Entity> act1_available_npc = new ArrayList<>();
+    act1_available_npc.add(blacksmith_NPC);
+    act1_available_npc.add(cityguard_NPC);
+
+    System.out.println("These are the available NPCs:");
+    for (int i = 0; i < act1_available_npc.size(); i++) {
+      System.out.println("[" + (i + 1) + "] " + act1_available_npc.get(i).getName());
+    }
+
+    System.out.println("Which do you wanna talk to? ");
+    while (true) {
       if (scanner.hasNextInt()) {
         int choice = scanner.nextInt();
-        manager.chooseOption(choice);
+        if (choice > 0 && choice <= act1_available_npc.size()) {
+          manager.startDialogue(act1_available_npc.get(choice - 1).getDialogueNodeId());
+
+          while (manager.isActive()) {
+            System.out.print("Your choice: ");
+            if (scanner.hasNextInt()) {
+              int optionChoice = scanner.nextInt();
+              manager.chooseOption(optionChoice);
+            } else {
+              scanner.next();
+              System.out.println("Please enter a number.");
+            }
+          }
+          break;
+
+        } else {
+          System.out.println("Invalid option. Please pick 1-" + act1_available_npc.size());
+          System.out.print("Try again: ");
+        }
+
       } else {
-        scanner.next();
-        System.out.println("Please enter a number.");
+        String trash = scanner.next();
+        System.out.println("'" + trash + "' is not a number.");
+        System.out.print("Try again: ");
       }
     }
+
+    // manager.startDialogue(blacksmith_NPC.startDialogueNodeId());
+    //
+    // while (manager.isActive()) {
+    // System.out.print("Your choice: ");
+    // if (scanner.hasNextInt()) {
+    // int choice = scanner.nextInt();
+    // manager.chooseOption(choice);
+    // } else {
+    // scanner.next();
+    // System.out.println("Please enter a number.");
+    // }
+    // }
+    scanner.close();
   }
 }

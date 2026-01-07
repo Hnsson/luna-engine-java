@@ -1,0 +1,73 @@
+{
+  "startNode": "gate_guard_start",
+  "nodes": {
+    "gate_guard_start": {
+      "text": "Halt! The city gate is closed by order of the Duke. No one enters without a Royal Pass.",
+      "options": [
+        {
+          "text": "Here is my Royal Pass.",
+          "targetId": "node_enter_legit",
+          "conditionId": "has_royal_pass"
+        },
+        {
+          "text": "[WARRIOR] Step aside, or I will move you myself.",
+          "targetId": "node_intimidate_success",
+          "conditionId": "is_warrior"
+        },
+        {
+          "text": "(Bribe 10g) Surely we can look the other way?",
+          "targetId": "node_bribe_success",
+          "conditionId": "has_gold_10"
+        },
+        {
+          "text": "Why is the gate closed?",
+          "targetId": "node_explain_lore"
+        },
+        {
+          "text": "I'll come back later.",
+          "end": true
+        }
+      ]
+    },
+    "node_enter_legit": {
+      "text": "Everything seems to be in order. Welcome to the capital, citizen.",
+      "options": [
+        {
+          "text": "Thank you.",
+          "end": true
+        }
+      ]
+    },
+    "node_intimidate_success": {
+      "text": "Whoa, easy there! I don't get paid enough to fight a walking tank. Go on, just make it quick.",
+      "options": [
+        {
+          "text": "Smart choice.",
+          "end": true
+        }
+      ]
+    },
+    "node_bribe_success": {
+      "text": "*He quickly snatches the coins.* The Duke's orders are strict... but my eyesight is poor. Get in before I change my mind.",
+      "options": [
+        {
+          "text": "Pleasure doing business.",
+          "end": true
+        }
+      ]
+    },
+    "node_explain_lore": {
+      "text": "Monsters in the forest. Bandits on the road. The Duke says it's for 'public safety', but we all know he's just hoarding the grain.",
+      "options": [
+        {
+          "text": "I see. Let me try to enter again.",
+          "targetId": "gate_guard_start"
+        },
+        {
+          "text": "Sounds dangerous. Goodbye.",
+          "end": true
+        }
+      ]
+    }
+  }
+}
