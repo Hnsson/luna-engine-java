@@ -1,0 +1,46 @@
+package com.engine.dialogue.logic;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import com.engine.ecs.components.Transform;
+
+public class ConditionRegistry {
+  private static final Map<String, Condition> conditions = new HashMap<>();
+
+  /*
+   * This is where (at startup) are creating the conditions and actually defining
+   * them with their parameters (Context) using lambda functions.
+   */
+  static {
+    register("always_true", ctx -> true);
+    register("is_warrior", ctx -> {
+      System.out.println("Yo?");
+      return false;
+    });
+    register("has_gold_10", ctx -> {
+      System.out.println("Yo??");
+      // Get like player inventory component and check if inventory.gold >= 10;
+      return false;
+    });
+    register("is_running", ctx -> {
+      System.out.println("Yo???");
+      return Math.abs(ctx.player.getComponent(Transform.class).velocity.x) > 0;
+    });
+  }
+
+  public static void init() {
+    /*
+     * Just want to call this in DialogueManager.java to force java to load the
+     * class and run the static block above
+     */
+  }
+
+  public static void register(String id, Condition condition) {
+    conditions.put(id, condition);
+  }
+
+  public static Condition get(String id) {
+    return conditions.getOrDefault(id, ctx -> true);
+  }
+}

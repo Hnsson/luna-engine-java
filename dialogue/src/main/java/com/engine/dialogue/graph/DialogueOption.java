@@ -6,7 +6,8 @@ public class DialogueOption {
   private String conditionId;
   private Boolean end;
 
-  public DialogueOption() {}
+  public DialogueOption() {
+  }
 
   public String getText() {
     return this.text;
@@ -24,5 +25,3 @@ public class DialogueOption {
     return this.end;
   }
 }
-
-

@@ -44,13 +44,14 @@ public class Main {
 
     // Dialogue
     DialogueManager manager = new DialogueManager();
+    manager.loadAllGraphs("/graphs");
     Scanner scanner = new Scanner(System.in);
 
-    manager.registerGraph("/graphs/blacksmith_dialogue.json");
-    manager.registerGraph("/graphs/cityguard_dialogue.json");
+    // manager.registerGraph("/graphs/blacksmith_dialogue.json");
+    // manager.registerGraph("/graphs/cityguard_dialogue.json");
 
-    Entity blacksmith_NPC = new Entity("Brokk Ironjaw", "blacksmith_start");
-    Entity cityguard_NPC = new Entity("Garrett", "gate_guard_start");
+    Entity blacksmith_NPC = new Entity("[BLACKSMITH] Brokk Ironjaw", "blacksmith_start");
+    Entity cityguard_NPC = new Entity("[CITY GUARD] Garrett", "gate_guard_start");
 
     List<Entity> act1_available_npc = new ArrayList<>();
     act1_available_npc.add(blacksmith_NPC);
@@ -66,7 +67,7 @@ public class Main {
       if (scanner.hasNextInt()) {
         int choice = scanner.nextInt();
         if (choice > 0 && choice <= act1_available_npc.size()) {
-          manager.startDialogue(act1_available_npc.get(choice - 1).getDialogueNodeId());
+          manager.startDialogue(act1_available_npc.get(choice - 1).getDialogueNodeId(), player);
 
           while (manager.isActive()) {
             System.out.print("Your choice: ");

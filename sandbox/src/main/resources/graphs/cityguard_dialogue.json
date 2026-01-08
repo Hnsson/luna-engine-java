@@ -10,6 +10,11 @@
           "conditionId": "has_royal_pass"
         },
         {
+          "text": "Can't speak, I'm running from something!",
+          "end": true,
+          "conditionId": "is_running"
+        },
+        {
           "text": "[WARRIOR] Step aside, or I will move you myself.",
           "targetId": "node_intimidate_success",
           "conditionId": "is_warrior"
