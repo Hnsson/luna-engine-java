@@ -1,0 +1,16 @@
+[
+  {
+    "id": "iron_sword",
+    "name": "Iron Sword",
+    "durability": 100,
+    "description": "A sturdy blade for an adventurer.",
+    "price": 50
+  },
+  {
+    "id": "health_potion",
+    "name": "Red Potion",
+    "durability": 0,
+    "description": "Restores 50 HP.",
+    "price": 10
+  }
+]

@@ -9,6 +9,7 @@ application {
 dependencies {
   implementation project(':ecs')
   implementation project(':dialogue')
+  implementation project(':inventory-system')
 }
 
 run {
