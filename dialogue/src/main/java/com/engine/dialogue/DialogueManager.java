@@ -39,8 +39,6 @@ public class DialogueManager {
     this.graphStore = new HashMap<>();
     this.globalFlags = new HashMap<>();
 
-    System.out.println("VAAAAAAAA?");
-    ConditionRegistry.init();
     // registerGraph("/graphs/blacksmith_dialogue.json");
   }
 
@@ -94,7 +92,6 @@ public class DialogueManager {
     if (node == null) {
       System.err.println("Error: Node not found " + nodeId);
 
-      // End Conversation
       endConversation();
       return;
     }

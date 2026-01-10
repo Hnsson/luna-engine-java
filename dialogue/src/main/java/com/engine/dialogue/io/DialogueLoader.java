@@ -7,21 +7,21 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 
 public class DialogueLoader {
-    private static final Gson gson = new Gson();
+  private static final Gson gson = new Gson();
 
-    public static DialogueGraph load(String path) {
-        InputStream inputStream = DialogueLoader.class.getResourceAsStream(path);
+  public static DialogueGraph load(String path) {
+    InputStream inputStream = DialogueLoader.class.getResourceAsStream(path);
 
-        if (inputStream == null) {
-            System.err.println("Could not find file: " + path);
-            return null;
-        }
-
-        try (Reader reader = new InputStreamReader(inputStream)) {
-            return gson.fromJson(reader, DialogueGraph.class);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
+    if (inputStream == null) {
+      System.err.println("Could not find file: " + path);
+      return null;
     }
+
+    try (Reader reader = new InputStreamReader(inputStream)) {
+      return gson.fromJson(reader, DialogueGraph.class);
+    } catch (Exception e) {
+      e.printStackTrace();
+      return null;
+    }
+  }
 }

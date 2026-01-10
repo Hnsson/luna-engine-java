@@ -15,25 +15,15 @@ public class ConditionRegistry {
   static {
     register("always_true", ctx -> true);
     register("is_warrior", ctx -> {
-      System.out.println("Yo?");
       return false;
     });
     register("has_gold_10", ctx -> {
-      System.out.println("Yo??");
       // Get like player inventory component and check if inventory.gold >= 10;
       return false;
     });
     register("is_running", ctx -> {
-      System.out.println("Yo???");
       return Math.abs(ctx.player.getComponent(Transform.class).velocity.x) > 0;
     });
-  }
-
-  public static void init() {
-    /*
-     * Just want to call this in DialogueManager.java to force java to load the
-     * class and run the static block above
-     */
   }
 
   public static void register(String id, Condition condition) {
