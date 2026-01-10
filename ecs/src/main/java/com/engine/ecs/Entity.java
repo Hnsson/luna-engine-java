@@ -73,6 +73,7 @@ public class Entity {
       return getComponent((Class<T>) component.getClass());
     }
 
+    component.entity = this;
     this.components.add(component);
     this.activeComponents.set(typeId);
 
