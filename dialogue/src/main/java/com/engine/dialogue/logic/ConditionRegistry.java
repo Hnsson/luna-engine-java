@@ -9,8 +9,8 @@ public class ConditionRegistry {
   private static final Map<String, Condition> conditions = new HashMap<>();
 
   /*
-   * This is where (at startup) are creating the conditions and actually defining
-   * them with their parameters (Context) using lambda functions.
+   * This is where conditions are created and actually defined
+   * with their parameters (Context) using lambda functions.
    */
   static {
     register("always_true", ctx -> true);

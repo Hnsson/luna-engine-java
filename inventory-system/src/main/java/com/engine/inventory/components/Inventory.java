@@ -29,6 +29,15 @@ public class Inventory extends Component {
     }
   }
 
+  /*
+   * Setting an item directly into inventory without checks
+   *
+   * A faster but non-checking function to add if you know it will work correctly
+   */
+  public void setItem(ItemStack item, int index) {
+    inventory.set(index, item);
+  }
+
   public boolean addItem(ItemStack item) {
     for (int i = 0; i < capacity; i++) {
       ItemStack slot = inventory.get(i);
@@ -90,6 +99,14 @@ public class Inventory extends Component {
     if (index >= 0 && index < capacity) {
       inventory.set(index, null);
     }
+  }
+
+  public ItemStack getItem(int index) {
+    if (index < 0 || index >= capacity) {
+      return null;
+    }
+
+    return inventory.get(index);
   }
 
   public ItemStack retrieveItem(int index) {

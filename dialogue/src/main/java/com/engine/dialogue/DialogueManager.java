@@ -65,6 +65,14 @@ public class DialogueManager {
     }
   }
 
+  /*
+   * Insert a graph directly
+   */
+  public void addGraph(DialogueGraph graph) {
+    if (graph != null)
+      this.graphStore.put(graph.getStartNode(), graph);
+  }
+
   public void registerGraph(String path) {
     DialogueGraph graph = DialogueLoader.load(path);
     if (graph != null) {
@@ -152,6 +160,10 @@ public class DialogueManager {
     this.activeNode = null;
     this.activeGraph = null;
     this.currentUser = null;
+  }
+
+  public List<DialogueOption> getValidOptions() {
+    return this.validOptions;
   }
 
   private void printCurrentState() {

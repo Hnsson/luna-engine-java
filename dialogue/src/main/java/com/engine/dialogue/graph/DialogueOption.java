@@ -9,6 +9,16 @@ public class DialogueOption {
   public DialogueOption() {
   }
 
+  /*
+   * Defined for easier testing
+   */
+  public DialogueOption(String text, String targetId, String conditionId, Boolean end) {
+    this.text = text;
+    this.targetId = targetId;
+    this.conditionId = conditionId;
+    this.end = end;
+  }
+
   public String getText() {
     return this.text;
   }

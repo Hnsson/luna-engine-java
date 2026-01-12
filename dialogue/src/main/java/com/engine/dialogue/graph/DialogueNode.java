@@ -9,6 +9,14 @@ public class DialogueNode {
   public DialogueNode() {
   }
 
+  /*
+   * Defined for easier testing
+   */
+  public DialogueNode(String text, List<DialogueOption> options) {
+    this.text = text;
+    this.options = options;
+  }
+
   public String getText() {
     return this.text;
   }

@@ -9,6 +9,14 @@ public class DialogueGraph {
   public DialogueGraph() {
   }
 
+  /*
+   * Defined for easier testing
+   */
+  public DialogueGraph(String startNode, Map<String, DialogueNode> nodes) {
+    this.startNode = startNode;
+    this.nodes = nodes;
+  }
+
   public String getStartNode() {
     return this.startNode;
   }
