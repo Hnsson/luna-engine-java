@@ -105,9 +105,9 @@ public class Entity {
     }
   }
 
-  public void update() {
+  public void update(float deltaTime) {
     for (Component cmp : this.components) {
-      cmp.update();
+      cmp.update(deltaTime);
     }
   }
 

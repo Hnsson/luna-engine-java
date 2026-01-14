@@ -2,14 +2,23 @@ plugins {
   id 'application' // Sandbox is app, not library
 }
 
+ext {
+  gdxVersion = '1.14.0'
+}
+
 application {
-  mainClass = 'com.game.Main'
+  mainClass = 'com.game.DesktopLauncher'
 }
 
 dependencies {
   implementation project(':ecs')
+  implementation project(':math')
   implementation project(':dialogue')
   implementation project(':inventory-system')
+
+  implementation "com.badlogicgames.gdx:gdx:$gdxVersion"
+  implementation "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
+  implementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
 }
 
 run {

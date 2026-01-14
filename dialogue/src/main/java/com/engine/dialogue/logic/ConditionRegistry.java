@@ -15,7 +15,7 @@ public class ConditionRegistry {
   static {
     register("always_true", ctx -> true);
     register("is_warrior", ctx -> {
-      return false;
+      return true;
     });
     register("has_gold_10", ctx -> {
       // Get like player inventory component and check if inventory.gold >= 10;

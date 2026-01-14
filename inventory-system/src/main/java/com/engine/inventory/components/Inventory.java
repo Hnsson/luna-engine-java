@@ -20,11 +20,11 @@ public class Inventory extends Component {
     }
   }
 
-  public Inventory(int capacity) {
-    this.capacity = capacity;
-    this.inventory = new ArrayList<>(capacity);
+  public Inventory(int slots) {
+    this.capacity = slots;
+    this.inventory = new ArrayList<>(slots);
 
-    for (int i = 0; i < capacity; i++) {
+    for (int i = 0; i < slots; i++) {
       this.inventory.add(null); // ---
     }
   }
@@ -148,7 +148,7 @@ public class Inventory extends Component {
   }
 
   @Override
-  public void update() {
+  public void update(float deltaTime) {
   }
 
   @Override

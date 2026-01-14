@@ -40,9 +40,9 @@ public class Transform extends Component {
   }
 
   @Override
-  public void update() {
-    this.position.x += this.velocity.x;
-    this.position.y += this.velocity.y;
+  public void update(float deltaTime) {
+    this.position.x += this.velocity.x * deltaTime;
+    this.position.y += this.velocity.y * deltaTime;
   }
 
   @Override

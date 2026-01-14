@@ -139,8 +139,6 @@ public class DialogueManager {
 
     int internalIndex = optionIndex - 1;
 
-    List<DialogueOption> options = activeNode.getOptions();
-
     if (internalIndex < 0 || internalIndex >= validOptions.size()) {
       System.out.println("Invalid choice.");
       return;

@@ -9,7 +9,7 @@ public abstract class Component {
   public void eventHandler() {
   }
 
-  public void update() {
+  public void update(float deltaTime) {
   }
 
   public void render() {

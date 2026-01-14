@@ -51,12 +51,12 @@ class TransformTest {
     t.velocity.x = 5.0f;
     t.velocity.y = 2.0f;
 
-    t.update(); // Go one frame forward
+    t.update(1); // Go one frame forward
 
     assertEquals(5.0f, t.position.x, "X position should increase by X velocity");
     assertEquals(2.0f, t.position.y, "Y position should increase by Y velocity");
 
-    t.update(); // ...
+    t.update(1); // ...
 
     assertEquals(10.0f, t.position.x);
     assertEquals(4.0f, t.position.y);

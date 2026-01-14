@@ -48,8 +48,21 @@ public class Vector2f {
     return this;
   }
 
-  public double mag() {
-    return Math.sqrt((x * x) + (y * y));
+  public void set(float x, float y) {
+    this.x = x;
+    this.y = y;
+  }
+
+  public void normalize() {
+    float magnitude = mag();
+    if (magnitude != 0) {
+      this.x /= magnitude;
+      this.y /= magnitude;
+    }
+  }
+
+  public float mag() {
+    return (float) Math.sqrt((x * x) + (y * y));
   }
 
   @Override
