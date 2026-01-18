@@ -13,7 +13,7 @@ public class DialogueLoader {
     InputStream inputStream = DialogueLoader.class.getResourceAsStream(path);
 
     if (inputStream == null) {
-      System.err.println("Could not find file: " + path);
+      System.err.println("[ERROR::DIALOGUELOADER] Could not find file: " + path);
       return null;
     }
 
