@@ -3,19 +3,23 @@ package com.game;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.engine.dialogue.DialogueManager;
 import com.engine.ecs.Entity;
 import com.engine.ecs.components.Transform;
 import com.engine.inventory.components.Inventory;
+import com.engine.ecs.components.physics.BoxCollider;
 import com.engine.inventory.logic.ItemRegistry;
 import com.engine.inventory.models.ItemStack;
+import com.engine.rendering.RenderSystem;
+import com.engine.rendering.components.SpriteRenderer;
+import com.engine.rendering.gdx.GDXAssetManager;
+import com.engine.rendering.gdx.GDXRender;
+import com.engine.rendering.logic.SpriteRegistry;
+import com.engine.rendering.models.SpriteDefinition;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +29,10 @@ public class Sandbox extends ApplicationAdapter {
   private ShapeRenderer shapeRenderer;
   private OrthographicCamera camera;
   private Viewport viewport;
+
+  private GDXAssetManager assetManager;
+  private GDXRender renderContext;
+  private RenderSystem renderer;
 
   private List<Entity> entities;
   private Entity player;
@@ -39,13 +47,23 @@ public class Sandbox extends ApplicationAdapter {
     camera = new OrthographicCamera();
     viewport = new FitViewport(DesktopLauncher.WINDOW_WIDTH, DesktopLauncher.WINDOW_HEIGHT, camera);
 
+    assetManager = new GDXAssetManager();
+    renderContext = new GDXRender(assetManager, camera);
+    renderer = new RenderSystem(renderContext);
+
     ItemRegistry.loadAllItems("/items/items.json");
     dialogueManager.loadAllGraphs("/graphs");
+    assetManager.loadTexture("sprites/playerIdle.png");
+    SpriteRegistry.register("playerIdle", new SpriteDefinition("sprites/playerIdle.png", 0, 0, 192, 192));
 
     player = new Entity("Tav");
     player.addComponent(new Transform(400, 300, 1));
+    player.addComponent(new BoxCollider(10, 10));
     player.addComponent(new Inventory(10));
     player.getComponent(Inventory.class).addItem(new ItemStack("iron_sword", 1));
+
+    player.addComponent(new SpriteRenderer("playerIdle", 192, 192, 0, -(96 / 2)));
+
     entities.add(player);
 
     Entity npcBlacksmith = new Entity("[BLACKSMITH] Brokk Ironjaw", "blacksmith_start");
@@ -56,6 +74,7 @@ public class Sandbox extends ApplicationAdapter {
   @Override
   public void resize(int width, int height) {
     viewport.update(width, height, true);
+    renderContext.resize(width, height);
   }
 
   @Override
@@ -65,13 +84,24 @@ public class Sandbox extends ApplicationAdapter {
 
     eventHandler();
     update(delta);
-    draw();
+    renderer.render(entities);
+    renderer.renderDebug(entities);
+    renderer.renderUI(entities);
   }
 
   private void eventHandler() {
     /*
-     * Same reasoning as in draw()
-     *
+     * Will probably add a controller context that the general game can implement
+     * but different frameworks
+     * define themselves just like I did with the rendering where the asset manager
+     * and render context is generalized
+     * in render core but the rendering-libgdx is actually defining them with that
+     * framework and I use them here for test,
+     * but the controller should still define the same function and parameters if
+     * using libgdx or opengl, doesn't matter.
+     * That is why interface is such a good way for this, to keep it general for
+     * when making the game but I can define it
+     * however I want in the future based on the game and so on.
      */
     // for (Entity entity : entities) {
     // entity.eventHandler();
@@ -79,28 +109,37 @@ public class Sandbox extends ApplicationAdapter {
 
     if (!player.hasComponent(Transform.class))
       return;
-    Transform t = player.getComponent(Transform.class);
+    Transform transform = player.getComponent(Transform.class);
+    SpriteRenderer sprite = player.getComponent(SpriteRenderer.class);
     float speed = 200f;
 
-    t.velocity.zero();
+    transform.velocity.zero();
     float dirX = 0;
     float dirY = 0;
 
-    if (Gdx.input.isKeyPressed(Input.Keys.D))
+    if (Gdx.input.isKeyPressed(Input.Keys.D)) {
       dirX += 1;
-    if (Gdx.input.isKeyPressed(Input.Keys.A))
+      if (sprite != null) {
+        sprite.flipX = false;
+      }
+    }
+    if (Gdx.input.isKeyPressed(Input.Keys.A)) {
       dirX -= 1;
+      if (sprite != null) {
+        sprite.flipX = true;
+      }
+    }
     if (Gdx.input.isKeyPressed(Input.Keys.W))
       dirY += 1;
     if (Gdx.input.isKeyPressed(Input.Keys.S))
       dirY -= 1;
 
-    t.velocity.set(dirX, dirY);
-    if (t.velocity.mag() > 0) {
-      t.velocity.normalize(); // stops the diagonal speed being greater
+    transform.velocity.set(dirX, dirY);
+    if (transform.velocity.mag() > 0) {
+      transform.velocity.normalize(); // stops the diagonal speed being greater
 
-      t.velocity.x *= speed;
-      t.velocity.y *= speed;
+      transform.velocity.x *= speed;
+      transform.velocity.y *= speed;
     }
   }
 
@@ -112,65 +151,16 @@ public class Sandbox extends ApplicationAdapter {
     camera.update();
   }
 
-  private void draw() {
-    Gdx.gl.glClearColor(0.1f, 0.1f, 0.1f, 1);
-    Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-    /*
-     * Will not run the rendering code inside entities
-     *
-     * Don't want the library to be bound to this specific application framework
-     * just yet, So will try to draw things from here "over" it, on the existing
-     * information from the components
-     */
-    // for (Entity entity : entities) {
-    // entity.render();
-    // }
-
-    shapeRenderer.setProjectionMatrix(camera.combined);
-    // Drawing all filled shapes to not constnatly flush GPU (keep begin and end
-    // outside)
-    shapeRenderer.begin(ShapeType.Filled);
-    for (Entity entity : entities) {
-      if (entity.hasComponent(Transform.class)) {
-        Transform t = entity.getComponent(Transform.class);
-
-        Color color;
-        if (entity.getName() == "Tav") {
-          color = Color.BLUE;
-        } else {
-          color = Color.RED;
-        }
-
-        drawRect(t.position.x, t.position.y, 10, 10, ShapeType.Line, color);
-      }
-    }
-    shapeRenderer.end();
-
-    // Draw all line shapes
-    shapeRenderer.begin(ShapeType.Line);
-    for (Entity entity : entities) {
-      // Will draw all debug things (colliders and so on here later)
-      // if (entity.hasComponent(Transform.class)) {
-      // //
-      // }
-    }
-    shapeRenderer.end();
-  }
-
-  private void drawRect(float x, float y, int width, int height, ShapeType type, Color color) {
-    shapeRenderer.setColor(color);
-    shapeRenderer.rect(x, y, width, height);
-  }
-
-  private void drawSphere(int x, int y, int width, int height, ShapeType type, Color color) {
-    shapeRenderer.setColor(color);
-    shapeRenderer.ellipse(x, y, width, height);
-  }
-
   @Override
   public void dispose() {
     if (shapeRenderer != null) {
       shapeRenderer.dispose();
+    }
+    if (renderContext != null) {
+      renderContext.dispose();
+    }
+    if (assetManager != null) {
+      assetManager.dispose();
     }
 
     System.exit(0); // This fixed the Segmentation Fault due to being in WSL

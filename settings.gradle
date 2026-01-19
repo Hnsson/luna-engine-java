@@ -3,5 +3,7 @@ include 'math'
 include 'ecs'
 include 'dialogue'
 include 'inventory-system'
+include 'rendering-core'
+include 'rendering-libgdx'
 
 include 'sandbox'
