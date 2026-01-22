@@ -96,6 +96,10 @@ public class Entity {
     return null;
   }
 
+  public List<Component> getComponents() {
+    return this.components;
+  }
+
   public void init() {
   }
 

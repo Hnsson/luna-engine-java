@@ -1,8 +1,15 @@
 # TODO
 - [ ] Add a UIComponent that contains a sprite, screen position, widht, height, and so on. So it will be rendered in the UIFrame on top of everything.
-- [ ] Add a ControllerContext component that can be defined by each framework and attached to player to make it move. Has attributes that
+- [ ] ~~Add a ControllerContext component that can be defined by each framework and attached to player to make it move. Has attributes that
       are universal such as raw value (-1 to 1), clamped magnitude, maybe even deadzone adjusted value (if 0.1 return 0 => stick drift)
-      direction vector (normalized), doubletap, more.
+      direction vector (normalized), doubletap, more.~~
+- [ ] [CONTROLLER NEW] Better would be to just create a pure data class cause I want serialization so it only contains numbers (easy to save inputs like that in JSON).
+      So this logic module should not need to know about the movement system which should be implemented per framework (LibGDX, OpenGL, ...), so this
+      component remains unchanged
+- [X] Add serialization and deserialization so that I can save and load game, this can be used either just raw like I do now so you can save scum :)
+      or the most probable function will be that each "actual" game implementaiton that is framework specific will have a LevelManager or something
+      like that, that can use saveEntity and loadEntity to manage that per level saveGame("level_1/player_save.json") and saveGame("level_2/player_save.json")
+      and so on so states can be remembered between levels.
 - [ ] Implement the BoxCollider with the collision logic and then Implement a CircleCollider.
 - [ ] Probably need a camera interface because the cameras are different in each framework? If I don't just wanna have it like now where the framework
       Implement handles that at their own accord.

@@ -23,6 +23,10 @@ public class SpriteRenderer extends Component {
   public float xOffset = 0;
   public float yOffset = 0;
 
+  public SpriteRenderer() {
+    this("default", 0, 0, 0, 0);
+  }
+
   public SpriteRenderer(String spriteId, float width, float height) {
     this.spriteId = spriteId;
     this.width = width;

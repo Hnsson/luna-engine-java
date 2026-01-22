@@ -14,16 +14,6 @@ class TransformTest {
 
     assertEquals(0, t.position.x);
     assertEquals(0, t.position.y);
-    assertEquals(1, t.scale); // Default scale is 1
-  }
-
-  @Test
-  void testConstructorWithScale() {
-    Transform t = new Transform(5);
-
-    assertEquals(5, t.scale);
-    assertEquals(0, t.position.x); // Should still be zero
-    assertNotNull(t.position); // Should still be allocated
   }
 
   @Test
@@ -32,16 +22,14 @@ class TransformTest {
 
     assertEquals(10.5f, t.position.x);
     assertEquals(-20.0f, t.position.y);
-    assertEquals(1, t.scale);
   }
 
   @Test
   void testFullConstructor() {
-    Transform t = new Transform(100f, 200f, 10);
+    Transform t = new Transform(100f, 200f);
 
     assertEquals(100f, t.position.x);
     assertEquals(200f, t.position.y);
-    assertEquals(10, t.scale);
   }
 
   @Test

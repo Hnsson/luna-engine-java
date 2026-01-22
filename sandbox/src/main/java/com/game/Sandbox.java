@@ -3,6 +3,7 @@ package com.game;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -20,6 +21,7 @@ import com.engine.rendering.gdx.GDXAssetManager;
 import com.engine.rendering.gdx.GDXRender;
 import com.engine.rendering.logic.SpriteRegistry;
 import com.engine.rendering.models.SpriteDefinition;
+import com.engine.ecs.ECSSerializer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +36,8 @@ public class Sandbox extends ApplicationAdapter {
   private GDXRender renderContext;
   private RenderSystem renderer;
 
+  private ECSSerializer serializer;
+
   private List<Entity> entities;
   private Entity player;
 
@@ -47,6 +51,8 @@ public class Sandbox extends ApplicationAdapter {
     camera = new OrthographicCamera();
     viewport = new FitViewport(DesktopLauncher.WINDOW_WIDTH, DesktopLauncher.WINDOW_HEIGHT, camera);
 
+    serializer = new ECSSerializer();
+
     assetManager = new GDXAssetManager();
     renderContext = new GDXRender(assetManager, camera);
     renderer = new RenderSystem(renderContext);
@@ -57,17 +63,18 @@ public class Sandbox extends ApplicationAdapter {
     SpriteRegistry.register("playerIdle", new SpriteDefinition("sprites/playerIdle.png", 0, 0, 192, 192));
 
     player = new Entity("Tav");
-    player.addComponent(new Transform(400, 300, 1));
+    player.addComponent(new Transform(400, 300));
     player.addComponent(new BoxCollider(10, 10));
     player.addComponent(new Inventory(10));
     player.getComponent(Inventory.class).addItem(new ItemStack("iron_sword", 1));
 
-    player.addComponent(new SpriteRenderer("playerIdle", 192, 192, 0, -(96 / 2)));
+    player.addComponent(new SpriteRenderer("playerIdle", 192, 192, 0, -(96 /
+        2)));
 
     entities.add(player);
 
     Entity npcBlacksmith = new Entity("[BLACKSMITH] Brokk Ironjaw", "blacksmith_start");
-    npcBlacksmith.addComponent(new Transform(200, 100, 1));
+    npcBlacksmith.addComponent(new Transform(200, 100));
     entities.add(npcBlacksmith);
   }
 
@@ -117,6 +124,16 @@ public class Sandbox extends ApplicationAdapter {
     float dirX = 0;
     float dirY = 0;
 
+    // ----- Save scum ;) -----
+    if (Gdx.input.isKeyPressed(Input.Keys.F5)) {
+      // BG3 shortcut for quicksave
+      saveGame();
+    }
+    if (Gdx.input.isKeyPressed(Input.Keys.F8)) {
+      // BG3 shortcut for load most recent save
+      loadGame();
+    }
+    // ------------------------
     if (Gdx.input.isKeyPressed(Input.Keys.D)) {
       dirX += 1;
       if (sprite != null) {
@@ -149,6 +166,30 @@ public class Sandbox extends ApplicationAdapter {
     }
 
     camera.update();
+  }
+
+  private void saveGame() {
+    String playerData = serializer.saveEntity(player);
+
+    FileHandle file = Gdx.files.local("saves/player_save.json");
+    file.writeString(playerData, false);
+
+    System.out.println("Saved game");
+  }
+
+  private void loadGame() {
+    FileHandle file = Gdx.files.local("saves/player_save.json");
+
+    if (file.exists()) {
+      String jsonText = file.readString();
+      Entity loadedPlayer = serializer.loadEntity(jsonText);
+
+      entities.remove(this.player); // Remove so I dont update old player data
+      this.player = loadedPlayer;
+      entities.add(this.player);
+
+      System.out.println("Game loaded");
+    }
   }
 
   @Override
