@@ -1,9 +1,6 @@
 rootProject.name = 'luna-engine-java'
-include 'math'
-include 'ecs'
-include 'dialogue'
-include 'inventory-system'
-include 'rendering-core'
-include 'rendering-libgdx'
+
+include 'luna-core'
+include 'luna-libgdx'
 
 include 'sandbox'

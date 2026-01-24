@@ -1,0 +1,10 @@
+ext {
+  gdxVersion = '1.14.0'
+}
+
+dependencies {
+  api project(':luna-core')
+
+  // changed to api so the sandbox or whatever future project implement this automatically inherits this
+  api "com.badlogicgames.gdx:gdx:$gdxVersion"
+}
