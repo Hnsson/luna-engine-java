@@ -24,16 +24,4 @@ public class BoxCollider extends Component {
     this.offsetX = offsetX;
     this.offsetY = offsetY;
   }
-
-  @Override
-  public void init() {
-  }
-
-  @Override
-  public void update(float deltaTime) {
-  }
-
-  @Override
-  public void render() {
-  }
 }

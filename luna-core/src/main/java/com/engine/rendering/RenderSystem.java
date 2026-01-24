@@ -2,6 +2,7 @@ package com.engine.rendering;
 
 import java.util.List;
 
+import com.engine.GameSystem;
 import com.engine.ecs.Entity;
 import com.engine.ecs.components.Transform;
 import com.engine.ecs.components.physics.BoxCollider;
@@ -10,19 +11,37 @@ import com.engine.rendering.contexts.IRenderContext;
 import com.engine.rendering.logic.SpriteRegistry;
 import com.engine.rendering.models.SpriteDefinition;
 
-public class RenderSystem {
+public class RenderSystem implements GameSystem {
   private final IRenderContext context;
+  private final List<Entity> entities;
+  private boolean debugMode = false;
 
-  public RenderSystem(IRenderContext context) {
+  public RenderSystem(IRenderContext context, List<Entity> entities) {
     this.context = context; // Get the framework-specific implementation of the interface (libgdx, opengl,
                             // ...)
+    this.entities = entities;
   }
 
-  public void render(List<Entity> entities) {
+  public RenderSystem(IRenderContext context, List<Entity> entities, boolean debugMode) {
+    this.context = context;
+    this.entities = entities;
+    this.debugMode = debugMode;
+  }
+
+  @Override
+  public void render() {
     context.clearScreen(0.1f, 0.1f, 0.1f);
 
-    context.beginFrame();
+    renderEntities();
 
+    if (debugMode)
+      renderDebug();
+
+    renderUI();
+  }
+
+  public void renderEntities() {
+    context.beginFrame();
     for (Entity entity : entities) {
       if (!entity.hasComponent(Transform.class))
         continue;
@@ -64,11 +83,10 @@ public class RenderSystem {
         context.drawText(name, centeredX, centeredY, 1, 1, 1, 1);
       }
     }
-
     context.endFrame();
   }
 
-  public void renderDebug(List<Entity> entities) {
+  public void renderDebug() {
     context.beginDebugFrame();
 
     for (Entity entity : entities) {
@@ -100,7 +118,7 @@ public class RenderSystem {
     context.endDebugFrame();
   }
 
-  public void renderUI(List<Entity> entities) {
+  public void renderUI() {
     context.beginUIFrame();
 
     /*

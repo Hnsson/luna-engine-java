@@ -40,16 +40,4 @@ public class SpriteRenderer extends Component {
     this.xOffset = xOffset;
     this.yOffset = yOffset;
   }
-
-  @Override
-  public void init() {
-  }
-
-  @Override
-  public void update(float deltaTime) {
-  }
-
-  @Override
-  public void render() {
-  }
 }

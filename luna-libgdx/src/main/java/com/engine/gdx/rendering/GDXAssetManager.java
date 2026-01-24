@@ -1,4 +1,4 @@
-package com.engine.rendering.gdx;
+package com.engine.gdx.rendering;
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;

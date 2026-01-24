@@ -10,5 +10,14 @@ import com.engine.math.Vector2f;
  * per framework (LibGDX, OpenGL, ...), so this component remains unchanged
  */
 public class PlayerController extends Component {
+  public float speed;
   public Vector2f moveDir = new Vector2f(0, 0);
+
+  public PlayerController() {
+    this(150f);
+  }
+
+  public PlayerController(float speed) {
+    this.speed = speed;
+  }
 }

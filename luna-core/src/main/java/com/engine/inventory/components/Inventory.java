@@ -142,16 +142,4 @@ public class Inventory extends Component {
   public List<ItemStack> getInventory() {
     return this.inventory;
   }
-
-  @Override
-  public void init() {
-  }
-
-  @Override
-  public void update(float deltaTime) {
-  }
-
-  @Override
-  public void render() {
-  }
 }

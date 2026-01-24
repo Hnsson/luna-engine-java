@@ -101,23 +101,8 @@ public class Entity {
   }
 
   public void init() {
-  }
-
-  public void eventHandler() {
     for (Component cmp : this.components) {
-      cmp.eventHandler();
-    }
-  }
-
-  public void update(float deltaTime) {
-    for (Component cmp : this.components) {
-      cmp.update(deltaTime);
-    }
-  }
-
-  public void render() {
-    for (Component cmp : this.components) {
-      cmp.render();
+      cmp.init();
     }
   }
 }

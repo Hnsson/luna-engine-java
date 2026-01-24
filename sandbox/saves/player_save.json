@@ -7,8 +7,8 @@
       "type": "com.engine.ecs.components.Transform",
       "data": {
         "position": {
-          "x": 166.94687,
-          "y": 234.6316
+          "x": 169.462,
+          "y": 148.2317
         },
         "velocity": {
           "x": 0.0,
@@ -50,12 +50,22 @@
       }
     },
     {
+      "type": "com.engine.ecs.components.logic.PlayerController",
+      "data": {
+        "speed": 150.0,
+        "moveDir": {
+          "x": 0.0,
+          "y": 0.0
+        }
+      }
+    },
+    {
       "type": "com.engine.rendering.components.SpriteRenderer",
       "data": {
         "spriteId": "playerIdle",
         "width": 192.0,
         "height": 192.0,
-        "flipX": true,
+        "flipX": false,
         "flipY": false,
         "xOffset": 0.0,
         "yOffset": -48.0
@@ -63,6 +73,7 @@
     }
   ],
   "activeComponents": [
+    1,
     1,
     1,
     1,
