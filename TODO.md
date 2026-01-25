@@ -16,6 +16,9 @@
 - [ ] Add to EntityManager so that it can in its init (or constructor) load in and prepare entities with components from stored JSON file, so I can
       load in all entities I want from JSON instead of manually creating all in code which is both messy and annoying. So if I load in all entities and their
       components from JSON and then allow the game to easily access them with searching list and maps will be A GREAT ADDITION!!!
+- [ ] Create a StateManager which could possible used handling Game states such as MenuState, GameState, ... And could possibly be reused for other systems
+      such as handling player states such as DuckingState, IdleState, AttackState. So the main game has a StateManager object handling the Game screens
+      while the movement system has another StateManager object handling the player states.
 - [ ] Implement the BoxCollider with the collision logic and then Implement a CircleCollider.
 - [ ] Probably need a camera interface because the cameras are different in each framework? If I don't just wanna have it like now where the framework
       Implement handles that at their own accord.
