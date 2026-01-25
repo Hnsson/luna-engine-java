@@ -1,8 +1,5 @@
 # TODO
 - [ ] Add a UIComponent that contains a sprite, screen position, widht, height, and so on. So it will be rendered in the UIFrame on top of everything.
-- [ ] ~~Add a ControllerContext component that can be defined by each framework and attached to player to make it move. Has attributes that
-      are universal such as raw value (-1 to 1), clamped magnitude, maybe even deadzone adjusted value (if 0.1 return 0 => stick drift)
-      direction vector (normalized), doubletap, more.~~
 - [X] [CONTROLLER NEW] Better would be to just create a pure data class cause I want serialization so it only contains numbers (easy to save inputs like that in JSON).
       So this logic module should not need to know about the movement system which should be implemented per framework (LibGDX, OpenGL, ...), so this
       component remains unchanged
@@ -16,7 +13,7 @@
 - [X] Add to EntityManager so that it can in its init (or constructor) load in and prepare entities with components from stored JSON file, so I can
       load in all entities I want from JSON instead of manually creating all in code which is both messy and annoying. So if I load in all entities and their
       components from JSON and then allow the game to easily access them with searching list and maps will be A GREAT ADDITION!!!
-- [ ] Create a StateManager which could possible used handling Game states such as MenuState, GameState, ... And could possibly be reused for other systems
+- [X] Create a StateManager which could possible used handling Game states such as MenuState, GameState, ... And could possibly be reused for other systems
       such as handling player states such as DuckingState, IdleState, AttackState. So the main game has a StateManager object handling the Game screens
       while the movement system has another StateManager object handling the player states.
 - [ ] Implement the BoxCollider with the collision logic and then Implement a CircleCollider.
