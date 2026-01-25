@@ -2,24 +2,17 @@ package com.game;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import com.engine.dialogue.DialogueManager;
-import com.engine.ecs.Entity;
 import com.engine.ecs.EntityManager;
-import com.engine.ecs.components.Transform;
-import com.engine.ecs.components.logic.PlayerController;
-import com.engine.inventory.components.Inventory;
-import com.engine.ecs.components.physics.BoxCollider;
 import com.engine.inventory.logic.ItemRegistry;
-import com.engine.inventory.models.ItemStack;
 import com.engine.rendering.RenderSystem;
-import com.engine.rendering.components.SpriteRenderer;
 import com.engine.GameSystem;
+import com.engine.gdx.io.GDXFileHandler;
 import com.engine.gdx.rendering.GDXAssetManager;
 import com.engine.gdx.rendering.GDXRender;
 import com.engine.gdx.systems.GDXInputSystem;
@@ -43,15 +36,13 @@ public class Sandbox extends ApplicationAdapter {
   private GDXAssetManager assetManager;
   private GDXRender renderContext;
 
-  private ECSSerializer serializer;
-
   private GDXInputSystem inputSystem;
   private GDXMovementSystem movementSystem;
   private List<GameSystem> systems;
 
+  private GDXFileHandler fileHandler;
+  private ECSSerializer serializer;
   private EntityManager entityManager;
-  private List<Entity> entities;
-  private Entity player;
 
   private static final DialogueManager dialogueManager = new DialogueManager();
 
@@ -65,8 +56,6 @@ public class Sandbox extends ApplicationAdapter {
     camera = new OrthographicCamera();
     viewport = new FitViewport(DesktopLauncher.WINDOW_WIDTH, DesktopLauncher.WINDOW_HEIGHT, camera);
 
-    serializer = new ECSSerializer();
-
     assetManager = new GDXAssetManager();
     renderContext = new GDXRender(assetManager, camera);
 
@@ -75,23 +64,9 @@ public class Sandbox extends ApplicationAdapter {
     assetManager.loadTexture("sprites/playerIdle.png");
     SpriteRegistry.register("playerIdle", new SpriteDefinition("sprites/playerIdle.png", 0, 0, 192, 192));
 
-    // Should just load entities from the loadGame() so that I don't have to create
-    // entities here (if 20+ its gonna get real messy)
-    player = new Entity("Tav");
-    player.addComponent(new Transform(400, 300));
-    player.addComponent(new BoxCollider(10, 10));
-    player.addComponent(new Inventory(10));
-    player.getComponent(Inventory.class).addItem(new ItemStack("iron_sword", 1));
-
-    player.addComponent(new PlayerController());
-    player.addComponent(new SpriteRenderer("playerIdle", 192, 192, 0, -(96 /
-        2)));
-
-    entityManager.addEntity(player);
-
-    Entity npcBlacksmith = new Entity("[BLACKSMITH] Brokk Ironjaw", "blacksmith_start");
-    npcBlacksmith.addComponent(new Transform(200, 100));
-    entityManager.addEntity(npcBlacksmith);
+    fileHandler = new GDXFileHandler();
+    serializer = new ECSSerializer();
+    loadGame();
 
     // Game systems:
     // Have input system still stored normally because I want to access keybindings
@@ -151,28 +126,17 @@ public class Sandbox extends ApplicationAdapter {
   }
 
   private void saveGame() {
-    String playerData = serializer.saveEntity(player);
-
-    FileHandle file = Gdx.files.local("saves/player_save.json");
-    file.writeString(playerData, false);
-
+    // In the future a state will have a state name (Level name)
+    // That will append that to the file so I can easily load and save
+    // levels based on the state name they got.
+    // for example: "saves/" + this.stateId + ".json"
+    entityManager.saveEntities("saves/entities.json", fileHandler, serializer);
     System.out.println("Saved game");
   }
 
   private void loadGame() {
-    FileHandle file = Gdx.files.local("saves/player_save.json");
-
-    if (file.exists()) {
-      String jsonText = file.readString();
-      Entity loadedPlayer = serializer.loadEntity(jsonText);
-
-      if (this.player != null)
-        entityManager.removeEntity(this.player);
-      this.player = loadedPlayer;
-      entityManager.addEntity(this.player);
-
-      System.out.println("Game loaded");
-    }
+    entityManager.loadEntities("saves/entities.json", fileHandler, serializer, true);
+    System.out.println("Game loaded");
   }
 
   @Override

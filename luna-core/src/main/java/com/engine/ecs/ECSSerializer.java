@@ -1,7 +1,10 @@
 package com.engine.ecs;
 
 import com.google.gson.*;
+import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
+import java.util.Collections;
+import java.util.List;
 
 /*
  * Wanted to use the same graph deserialization with GSON that I used for dialogue on the actual entities
@@ -36,12 +39,18 @@ public class ECSSerializer {
     this.mainGson = builder.create();
   }
 
-  // It starts serializing entity and when it hit the component list inside the
-  // entity, the serializer function will be used on it
+  /*
+   * Saves a singular entity, like if player need a separate file
+   */
   public String saveEntity(Entity entity) {
+    if (entity == null)
+      return null;
     return mainGson.toJson(entity);
   }
 
+  /*
+   * Load a singular entity
+   */
   public Entity loadEntity(String json) {
     // Now that we removed (added transient to entity component) we need to reapply
     // it's owner to all components (is there a better way?)
@@ -53,6 +62,47 @@ public class ECSSerializer {
       }
     }
     return loadedEntity;
+  }
+
+  /*
+   * Saves all entities in a list of entities
+   */
+  public String saveEntities(List<Entity> entities) {
+    // Just return empty json if no entities to save
+    if (entities == null || entities.isEmpty())
+      return "[]";
+
+    Type listType = new TypeToken<List<Entity>>() {
+    }.getType();
+    return mainGson.toJson(entities, listType);
+  }
+
+  /*
+   * Loads all entities from JSON into a list of entities
+   */
+  public List<Entity> loadEntities(String json) {
+    if (json == null || json.isEmpty())
+      return Collections.emptyList();
+
+    Type listType = new TypeToken<List<Entity>>() {
+    }.getType();
+    List<Entity> loadedEntities = mainGson.fromJson(json, listType);
+
+    // Now that we removed (added transient to entity component) we need to reapply
+    // it's owner to all components (is there a better way?)
+    if (loadedEntities != null) {
+      for (Entity entity : loadedEntities) {
+        if (entity.getComponents() != null) {
+          for (Component cmp : entity.getComponents()) {
+            cmp.entity = entity;
+          }
+        }
+      }
+
+      return loadedEntities;
+    }
+
+    return Collections.emptyList();
   }
 
   private static class ComponentAdapter implements JsonSerializer<Component>, JsonDeserializer<Component> {

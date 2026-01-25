@@ -13,7 +13,7 @@
 - [X] Create a EntityManager that has mapping of Component classes to entitiies using them to avoid the issue where loading the game and updating the player all
       systems using player references gets stale-references, so now all accessing and adding is done through the list entities which is consistent.
       Also wanted to have mapping from class to list of entities so that for example the MovementSystem can get all entities with PlayerControllers components on them.
-- [ ] Add to EntityManager so that it can in its init (or constructor) load in and prepare entities with components from stored JSON file, so I can
+- [X] Add to EntityManager so that it can in its init (or constructor) load in and prepare entities with components from stored JSON file, so I can
       load in all entities I want from JSON instead of manually creating all in code which is both messy and annoying. So if I load in all entities and their
       components from JSON and then allow the game to easily access them with searching list and maps will be A GREAT ADDITION!!!
 - [ ] Create a StateManager which could possible used handling Game states such as MenuState, GameState, ... And could possibly be reused for other systems

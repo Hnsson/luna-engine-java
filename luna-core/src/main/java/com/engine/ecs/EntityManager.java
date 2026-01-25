@@ -1,5 +1,6 @@
 package com.engine.ecs;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -7,6 +8,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import com.engine.FileContext;
 
 /*
  * Will manage the storage of all entities.
@@ -21,6 +24,32 @@ public class EntityManager {
   private Map<Class<? extends Component>, List<Entity>> componentEntityMap = new HashMap<>();
 
   public EntityManager() {
+  }
+
+  public void loadEntities(String path, FileContext fileContext, ECSSerializer serializer, boolean replace) {
+    /*
+     * Replace boolean is to determine if I clear and replace all entities or not,
+     * need this case because maybe I want to replace all if the player died (reset
+     * level) And maybe I don't want to replace all if I load in a level or like a
+     * wave of enemies but don't want to reset the player and every other entitiy.
+     */
+    if (replace)
+      clear();
+
+    String jsonContent = fileContext.readFile(path);
+    List<Entity> loadedEntities = serializer.loadEntities(jsonContent);
+
+    if (loadedEntities != null) {
+      for (Entity entity : loadedEntities) {
+        addEntity(entity);
+      }
+    }
+  }
+
+  public void saveEntities(String path, FileContext fileContext, ECSSerializer serializer) {
+    String jsonContent = serializer.saveEntities(entities);
+
+    fileContext.writeFile(path, jsonContent);
   }
 
   public void addEntity(Entity entity) {
@@ -72,5 +101,10 @@ public class EntityManager {
     }
 
     return new ArrayList<>(entities);
+  }
+
+  public void clear() {
+    entities.clear();
+    componentEntityMap.clear();
   }
 }
