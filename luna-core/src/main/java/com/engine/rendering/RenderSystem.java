@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.engine.GameSystem;
 import com.engine.ecs.Entity;
+import com.engine.ecs.EntityManager;
 import com.engine.ecs.components.Transform;
 import com.engine.ecs.components.physics.BoxCollider;
 import com.engine.rendering.components.SpriteRenderer;
@@ -13,18 +14,18 @@ import com.engine.rendering.models.SpriteDefinition;
 
 public class RenderSystem implements GameSystem {
   private final IRenderContext context;
-  private final List<Entity> entities;
+  private EntityManager entityManager;
   private boolean debugMode = false;
 
-  public RenderSystem(IRenderContext context, List<Entity> entities) {
+  public RenderSystem(IRenderContext context, EntityManager entityManager) {
     this.context = context; // Get the framework-specific implementation of the interface (libgdx, opengl,
                             // ...)
-    this.entities = entities;
+    this.entityManager = entityManager;
   }
 
-  public RenderSystem(IRenderContext context, List<Entity> entities, boolean debugMode) {
+  public RenderSystem(IRenderContext context, EntityManager entityManager, boolean debugMode) {
     this.context = context;
-    this.entities = entities;
+    this.entityManager = entityManager;
     this.debugMode = debugMode;
   }
 
@@ -42,6 +43,8 @@ public class RenderSystem implements GameSystem {
 
   public void renderEntities() {
     context.beginFrame();
+    List<Entity> entities = entityManager.getEntitiesWith(Transform.class, SpriteRenderer.class);
+
     for (Entity entity : entities) {
       if (!entity.hasComponent(Transform.class))
         continue;
@@ -88,6 +91,7 @@ public class RenderSystem implements GameSystem {
 
   public void renderDebug() {
     context.beginDebugFrame();
+    List<Entity> entities = entityManager.getEntitiesWith(Transform.class, SpriteRenderer.class);
 
     for (Entity entity : entities) {
       if (!entity.hasComponent(Transform.class))

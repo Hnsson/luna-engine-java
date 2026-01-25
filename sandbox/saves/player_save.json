@@ -7,8 +7,8 @@
       "type": "com.engine.ecs.components.Transform",
       "data": {
         "position": {
-          "x": 169.462,
-          "y": 148.2317
+          "x": 188.9347,
+          "y": 382.4834
         },
         "velocity": {
           "x": 0.0,

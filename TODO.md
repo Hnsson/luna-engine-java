@@ -3,13 +3,19 @@
 - [ ] ~~Add a ControllerContext component that can be defined by each framework and attached to player to make it move. Has attributes that
       are universal such as raw value (-1 to 1), clamped magnitude, maybe even deadzone adjusted value (if 0.1 return 0 => stick drift)
       direction vector (normalized), doubletap, more.~~
-- [ ] [CONTROLLER NEW] Better would be to just create a pure data class cause I want serialization so it only contains numbers (easy to save inputs like that in JSON).
+- [X] [CONTROLLER NEW] Better would be to just create a pure data class cause I want serialization so it only contains numbers (easy to save inputs like that in JSON).
       So this logic module should not need to know about the movement system which should be implemented per framework (LibGDX, OpenGL, ...), so this
       component remains unchanged
 - [X] Add serialization and deserialization so that I can save and load game, this can be used either just raw like I do now so you can save scum :)
       or the most probable function will be that each "actual" game implementaiton that is framework specific will have a LevelManager or something
       like that, that can use saveEntity and loadEntity to manage that per level saveGame("level_1/player_save.json") and saveGame("level_2/player_save.json")
       and so on so states can be remembered between levels.
+- [X] Create a EntityManager that has mapping of Component classes to entitiies using them to avoid the issue where loading the game and updating the player all
+      systems using player references gets stale-references, so now all accessing and adding is done through the list entities which is consistent.
+      Also wanted to have mapping from class to list of entities so that for example the MovementSystem can get all entities with PlayerControllers components on them.
+- [ ] Add to EntityManager so that it can in its init (or constructor) load in and prepare entities with components from stored JSON file, so I can
+      load in all entities I want from JSON instead of manually creating all in code which is both messy and annoying. So if I load in all entities and their
+      components from JSON and then allow the game to easily access them with searching list and maps will be A GREAT ADDITION!!!
 - [ ] Implement the BoxCollider with the collision logic and then Implement a CircleCollider.
 - [ ] Probably need a camera interface because the cameras are different in each framework? If I don't just wanna have it like now where the framework
       Implement handles that at their own accord.

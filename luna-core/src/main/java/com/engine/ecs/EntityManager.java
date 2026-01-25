@@ -1,0 +1,76 @@
+package com.engine.ecs;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+/*
+ * Will manage the storage of all entities.
+ * It prevents the stale-references issue on the systems when
+ * entities are loaded / reloaded, for example when you loadGame()
+ * at run-time, so that systems using that old references wont go bad.
+ * Also allowed for some cool searching functionality for Entities based
+ * on components
+ */
+public class EntityManager {
+  private List<Entity> entities = new ArrayList<>();
+  private Map<Class<? extends Component>, List<Entity>> componentEntityMap = new HashMap<>();
+
+  public EntityManager() {
+  }
+
+  public void addEntity(Entity entity) {
+    entities.add(entity);
+
+    for (Component component : entity.getComponents()) {
+      // safety, creates list if empty
+      componentEntityMap
+          .computeIfAbsent(component.getClass(), k -> new ArrayList<>())
+          .add(entity);
+    }
+  }
+
+  public void removeEntity(Entity entity) {
+    if (entity == null)
+      return;
+
+    entities.remove(entity);
+
+    for (Component component : entity.getComponents()) {
+      Class<? extends Component> type = component.getClass();
+
+      List<Entity> list = componentEntityMap.get(type);
+
+      if (list != null)
+        list.remove(entity);
+    }
+  }
+
+  public List<Entity> getEntities() {
+    return entities;
+  }
+
+  public Entity getEntity(int index) {
+    return entities.get(index);
+  }
+
+  public List<Entity> getEntitiesWith(Class<? extends Component> componentClass) {
+    return componentEntityMap.get(componentClass);
+  }
+
+  // Implemented using a set so that it is OR. Like if entity got <Component A> or
+  // <Component B> when called (Component A.class, Component B.class)
+  public List<Entity> getEntitiesWith(Class<? extends Component>... componentClasses) {
+    Set<Entity> entities = new HashSet<>();
+
+    for (Class<? extends Component> classType : componentClasses) {
+      entities.addAll(componentEntityMap.getOrDefault(classType, Collections.emptyList()));
+    }
+
+    return new ArrayList<>(entities);
+  }
+}

@@ -2,29 +2,27 @@ package com.engine.gdx.systems;
 
 import java.util.Map;
 import java.util.HashMap;
+import java.util.List;
 
 import com.engine.GameSystem;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.engine.ecs.Entity;
+import com.engine.ecs.EntityManager;
 import com.engine.ecs.components.logic.PlayerController;
 import com.engine.rendering.components.SpriteRenderer;
 
 public class GDXInputSystem implements GameSystem {
+  private EntityManager entityManager;
+
   private Map<Mapping, Integer> inputMapping = new HashMap<>();
-  private PlayerController controller;
-  private SpriteRenderer sprite;
 
   public static enum Mapping {
     LEFT, RIGHT, UP, DOWN, PAUSE, SAVE, LOAD
   };
 
-  public GDXInputSystem(PlayerController controller) {
-    this(controller, null);
-  }
-
-  public GDXInputSystem(PlayerController controller, SpriteRenderer sprite) {
-    this.controller = controller;
-    this.sprite = sprite;
+  public GDXInputSystem(EntityManager entityManager) {
+    this.entityManager = entityManager;
 
     inputMapping.put(Mapping.LEFT, Input.Keys.A);
     inputMapping.put(Mapping.RIGHT, Input.Keys.D);
@@ -43,7 +41,7 @@ public class GDXInputSystem implements GameSystem {
     return inputMapping.get(key);
   }
 
-  private void flipSprite(boolean flipX, boolean value) {
+  private void flipSprite(SpriteRenderer sprite, boolean flipX, boolean value) {
     if (sprite == null)
       return;
 
@@ -54,33 +52,35 @@ public class GDXInputSystem implements GameSystem {
     }
   }
 
-  public void setTarget(PlayerController controller, SpriteRenderer sprite) {
-    this.controller = controller;
-    this.sprite = sprite;
-  }
-
   @Override
   public void eventHandler() {
-    if (controller == null)
-      return;
+    List<Entity> entities = entityManager.getEntitiesWith(PlayerController.class, SpriteRenderer.class);
 
-    controller.moveDir.set(0, 0);
+    for (Entity entity : entities) {
+      PlayerController controller = entity.getComponent(PlayerController.class);
+      SpriteRenderer sprite = entity.getComponent(SpriteRenderer.class);
 
-    if (Gdx.input.isKeyPressed(inputMapping.get(Mapping.LEFT))) {
-      controller.moveDir.x = -1;
-      flipSprite(true, true);
-    }
-    if (Gdx.input.isKeyPressed(inputMapping.get(Mapping.RIGHT))) {
-      controller.moveDir.x = 1;
-      flipSprite(true, false);
-    }
-    if (Gdx.input.isKeyPressed(inputMapping.get(Mapping.UP))) {
-      controller.moveDir.y = 1;
-    }
-    if (Gdx.input.isKeyPressed(inputMapping.get(Mapping.DOWN))) {
-      controller.moveDir.y = -1;
-    }
+      if (controller == null)
+        return;
 
-    controller.moveDir.normalize();
+      controller.moveDir.set(0, 0);
+
+      if (Gdx.input.isKeyPressed(inputMapping.get(Mapping.LEFT))) {
+        controller.moveDir.x = -1;
+        flipSprite(sprite, true, true);
+      }
+      if (Gdx.input.isKeyPressed(inputMapping.get(Mapping.RIGHT))) {
+        controller.moveDir.x = 1;
+        flipSprite(sprite, true, false);
+      }
+      if (Gdx.input.isKeyPressed(inputMapping.get(Mapping.UP))) {
+        controller.moveDir.y = 1;
+      }
+      if (Gdx.input.isKeyPressed(inputMapping.get(Mapping.DOWN))) {
+        controller.moveDir.y = -1;
+      }
+
+      controller.moveDir.normalize();
+    }
   }
 }

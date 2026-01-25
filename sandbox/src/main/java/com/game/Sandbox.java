@@ -2,7 +2,6 @@ package com.game;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -11,6 +10,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 
 import com.engine.dialogue.DialogueManager;
 import com.engine.ecs.Entity;
+import com.engine.ecs.EntityManager;
 import com.engine.ecs.components.Transform;
 import com.engine.ecs.components.logic.PlayerController;
 import com.engine.inventory.components.Inventory;
@@ -49,6 +49,7 @@ public class Sandbox extends ApplicationAdapter {
   private GDXMovementSystem movementSystem;
   private List<GameSystem> systems;
 
+  private EntityManager entityManager;
   private List<Entity> entities;
   private Entity player;
 
@@ -57,8 +58,8 @@ public class Sandbox extends ApplicationAdapter {
   @Override
   public void create() {
     shapeRenderer = new ShapeRenderer();
-    entities = new ArrayList<>();
 
+    entityManager = new EntityManager();
     systems = new ArrayList<>();
 
     camera = new OrthographicCamera();
@@ -86,21 +87,19 @@ public class Sandbox extends ApplicationAdapter {
     player.addComponent(new SpriteRenderer("playerIdle", 192, 192, 0, -(96 /
         2)));
 
-    entities.add(player);
+    entityManager.addEntity(player);
 
     Entity npcBlacksmith = new Entity("[BLACKSMITH] Brokk Ironjaw", "blacksmith_start");
     npcBlacksmith.addComponent(new Transform(200, 100));
-    entities.add(npcBlacksmith);
+    entityManager.addEntity(npcBlacksmith);
 
     // Game systems:
     // Have input system still stored normally because I want to access keybindings
-    inputSystem = new GDXInputSystem(player.getComponent(PlayerController.class),
-        player.getComponent(SpriteRenderer.class));
-    movementSystem = new GDXMovementSystem(player.getComponent(PlayerController.class),
-        player.getComponent(Transform.class));
+    inputSystem = new GDXInputSystem(entityManager);
+    movementSystem = new GDXMovementSystem(entityManager);
 
     systems.add(inputSystem);
-    systems.add(new RenderSystem(renderContext, entities, true));
+    systems.add(new RenderSystem(renderContext, entityManager, true));
     systems.add(movementSystem);
   }
 
@@ -167,23 +166,10 @@ public class Sandbox extends ApplicationAdapter {
       String jsonText = file.readString();
       Entity loadedPlayer = serializer.loadEntity(jsonText);
 
-      entities.remove(this.player); // Remove so I dont update old player data
+      if (this.player != null)
+        entityManager.removeEntity(this.player);
       this.player = loadedPlayer;
-      entities.add(this.player);
-
-      // I don't like the solution below. Either I can do this
-      // or I can defaultly give the inputSystem and movementSystem
-      // all the entities so that when I update entities here
-      // they get the new player, but that would mean that they
-      // would have to process the whole entities list instead of just
-      // one player. I don't know what to do with this one yet.
-      inputSystem.setTarget(
-          player.getComponent(PlayerController.class),
-          player.getComponent(SpriteRenderer.class));
-
-      movementSystem.setTarget(
-          player.getComponent(PlayerController.class),
-          player.getComponent(Transform.class));
+      entityManager.addEntity(this.player);
 
       System.out.println("Game loaded");
     }
