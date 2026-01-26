@@ -43,6 +43,8 @@ public class GDXRender implements IRenderContext, Disposable {
 
   @Override
   public void beginFrame() {
+    if (shapeRenderer.isDrawing())
+      shapeRenderer.end();
     batch.setProjectionMatrix(camera.combined);
     batch.begin();
   }
@@ -63,6 +65,33 @@ public class GDXRender implements IRenderContext, Disposable {
 
   @Override
   public void endDebugFrame() {
+    shapeRenderer.end();
+  }
+
+  @Override
+  public void beginUIFrame() {
+    if (shapeRenderer.isDrawing())
+      shapeRenderer.end();
+    batch.setProjectionMatrix(uiCamera.combined);
+    batch.begin();
+  }
+
+  @Override
+  public void endUIFrame() {
+    batch.end();
+  }
+
+  @Override
+  public void beginUIShapeFrame() {
+    if (batch.isDrawing())
+      batch.end();
+    shapeRenderer.setProjectionMatrix(uiCamera.combined);
+    shapeRenderer.setAutoShapeType(true);
+    shapeRenderer.begin(ShapeType.Filled);
+  }
+
+  @Override
+  public void endUIShapeFrame() {
     shapeRenderer.end();
   }
 
@@ -98,17 +127,6 @@ public class GDXRender implements IRenderContext, Disposable {
   }
 
   @Override
-  public void beginUIFrame() {
-    batch.setProjectionMatrix(uiCamera.combined);
-    batch.begin();
-  }
-
-  @Override
-  public void endUIFrame() {
-    batch.end();
-  }
-
-  @Override
   public float getTextWidth(String text) {
     layout.setText(font, text);
     return layout.width;
@@ -118,6 +136,15 @@ public class GDXRender implements IRenderContext, Disposable {
   public void drawText(String text, float x, float y, float r, float g, float b, float a) {
     font.setColor(r, g, b, a);
     font.draw(batch, text, x, y);
+  }
+
+  public void drawProgressbar(float x, float y, int width, int height, float progress, float r1, float g1, float b1,
+      float a1, float r2, float g2, float b2, float a2) {
+    shapeRenderer.setColor(r1, g1, b1, a1);
+    shapeRenderer.rect(x, y, width, height);
+
+    shapeRenderer.setColor(r2, g2, b2, a2);
+    shapeRenderer.rect(x, y, width * progress, height);
   }
 
   @Override

@@ -13,7 +13,11 @@ package com.engine.rendering.contexts;
  */
 public interface IAssetManager {
 
+  void loadAllTextures(String internalPath);
+
   void loadTexture(String path);
+
+  void registerTexture(String spriteId, String filePath);
 
   void unloadTexture(String path);
 }

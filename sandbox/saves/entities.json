@@ -63,7 +63,7 @@
       {
         "type": "com.engine.rendering.components.SpriteRenderer",
         "data": {
-          "spriteId": "playerIdle",
+          "spriteId": "blue_units_Warrior_Warrior_Idle",
           "width": 192.0,
           "height": 192.0,
           "flipX": false,

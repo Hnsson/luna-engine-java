@@ -27,6 +27,10 @@ public interface IRenderContext {
 
   void endUIFrame();
 
+  void beginUIShapeFrame();
+
+  void endUIShapeFrame();
+
   void resize(int width, int height);
 
   void drawSprite(SpriteDefinition def, float x, float y, float width, float height, boolean flipX, boolean flipY);
@@ -38,4 +42,7 @@ public interface IRenderContext {
   float getTextWidth(String text);
 
   void drawText(String text, float x, float y, float r, float g, float b, float a);
+
+  void drawProgressbar(float x, float y, int width, int height, float progress, float r1, float g1, float b1,
+      float a1, float r2, float g2, float b2, float a2);
 }

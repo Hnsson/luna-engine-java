@@ -2,20 +2,23 @@ package com.game;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
-import com.engine.gdx.states.window.GDXGameLayer;
+import com.engine.gdx.rendering.GDXAssetManager;
 import com.engine.gdx.states.window.GDXOverlayLayer;
+import com.engine.gdx.states.window.GDXLoadingLayer;
 import com.engine.fsm.StateMachine;
 import com.engine.fsm.states.WindowLayer;
 
 // QUESTION FOR SELF: maybe use Game instead of ApplicationAdapter so I can use Screen and setScreen
 public class Sandbox extends ApplicationAdapter {
   private StateMachine<WindowLayer> fsm;
+  private GDXAssetManager assetManager;
   private GDXOverlayLayer overlay;
 
   @Override
   public void create() {
     fsm = new StateMachine();
-    fsm.pushLayer(new GDXGameLayer(DesktopLauncher.WINDOW_WIDTH, DesktopLauncher.WINDOW_HEIGHT));
+    assetManager = new GDXAssetManager();
+    fsm.pushLayer(new GDXLoadingLayer(DesktopLauncher.WINDOW_WIDTH, DesktopLauncher.WINDOW_HEIGHT, fsm, assetManager));
     overlay = new GDXOverlayLayer(DesktopLauncher.WINDOW_WIDTH, DesktopLauncher.WINDOW_HEIGHT, fsm);
     overlay.enter();
   }

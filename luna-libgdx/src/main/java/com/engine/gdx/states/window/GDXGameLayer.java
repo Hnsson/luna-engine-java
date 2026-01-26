@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.engine.GameSystem;
@@ -20,18 +19,15 @@ import com.engine.gdx.systems.GDXInputSystem;
 import com.engine.gdx.systems.GDXMovementSystem;
 import com.engine.inventory.logic.ItemRegistry;
 import com.engine.rendering.RenderSystem;
-import com.engine.rendering.logic.SpriteRegistry;
-import com.engine.rendering.models.SpriteDefinition;
 
 public class GDXGameLayer extends WindowLayer {
   private boolean isPaused = false;
 
-  private ShapeRenderer shapeRenderer;
   private OrthographicCamera camera;
   private Viewport viewport;
 
   private GDXAssetManager assetManager;
-  private GDXRender renderContext;
+  private GDXRender renderer;
 
   private GDXInputSystem inputSystem;
   private GDXMovementSystem movementSystem;
@@ -44,8 +40,9 @@ public class GDXGameLayer extends WindowLayer {
 
   private static final DialogueManager dialogueManager = new DialogueManager();
 
-  public GDXGameLayer(int width, int height) {
+  public GDXGameLayer(int width, int height, GDXAssetManager assetManager) {
     super(width, height); // pass it up
+    this.assetManager = assetManager;
   }
 
   @Override
@@ -55,21 +52,18 @@ public class GDXGameLayer extends WindowLayer {
 
   @Override
   public void enter() {
-    shapeRenderer = new ShapeRenderer();
-
     entityManager = new EntityManager();
     systems = new ArrayList<>();
 
     camera = new OrthographicCamera();
     viewport = new FitViewport(this.width, this.height, camera);
+    // Have to force viewport update when entering new Layer:
+    viewport.update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
 
-    assetManager = new GDXAssetManager();
-    renderContext = new GDXRender(assetManager, camera);
+    renderer = new GDXRender(assetManager, camera);
 
     ItemRegistry.loadAllItems("/items/items.json");
     dialogueManager.loadAllGraphs("/graphs");
-    assetManager.loadTexture("sprites/playerIdle.png");
-    SpriteRegistry.register("playerIdle", new SpriteDefinition("sprites/playerIdle.png", 0, 0, 192, 192));
 
     // Game systems:
     // Have input system still stored normally because I want to access keybindings
@@ -77,7 +71,7 @@ public class GDXGameLayer extends WindowLayer {
     movementSystem = new GDXMovementSystem(entityManager);
 
     systems.add(inputSystem);
-    systems.add(new RenderSystem(renderContext, entityManager, true));
+    systems.add(new RenderSystem(renderer, entityManager, true));
     systems.add(movementSystem);
 
     fileHandler = new GDXFileHandler();
@@ -87,11 +81,8 @@ public class GDXGameLayer extends WindowLayer {
 
   @Override
   public void exit() {
-    if (shapeRenderer != null) {
-      shapeRenderer.dispose();
-    }
-    if (renderContext != null) {
-      renderContext.dispose();
+    if (renderer != null) {
+      renderer.dispose();
     }
     if (assetManager != null) {
       assetManager.dispose();
@@ -101,7 +92,7 @@ public class GDXGameLayer extends WindowLayer {
   @Override
   public void resize(int width, int height) {
     viewport.update(width, height, true);
-    renderContext.resize(width, height);
+    renderer.resize(width, height);
   }
 
   @Override

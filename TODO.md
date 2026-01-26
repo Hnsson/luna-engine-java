@@ -1,5 +1,8 @@
 # TODO
 - [ ] Add a UIComponent that contains a sprite, screen position, widht, height, and so on. So it will be rendered in the UIFrame on top of everything.
+- [ ] Update README.md, been a while.
+- [ ] Implement a logger that neatly logs both terminal and file based on what you want.
+- [ ] [DEPENDENT ABOVE] Use the logger, there exists many places that doesn't have great error handling.
 - [X] [CONTROLLER NEW] Better would be to just create a pure data class cause I want serialization so it only contains numbers (easy to save inputs like that in JSON).
       So this logic module should not need to know about the movement system which should be implemented per framework (LibGDX, OpenGL, ...), so this
       component remains unchanged
