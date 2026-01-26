@@ -3,6 +3,23 @@
 - [ ] Update README.md, been a while.
 - [ ] Implement a logger that neatly logs both terminal and file based on what you want.
 - [ ] [DEPENDENT ABOVE] Use the logger, there exists many places that doesn't have great error handling.
+- [ ] Make it easy to start dialogue with entities, like implement a proximity sensor between colliders like how Unity has Collider.OnTriggerEnter(Collider). Or loop
+      through entities and check distance.
+- [ ] Create like an interface for the LIBGDX specific GameLayer implementaiton so I can have multiple levels (GameLayers) and also change so that each window/levels/GDXLevelLayer.java
+      which is general and implements GDXGameLayer and SHOULD take in constructor level name so that I can load that specific entities json file, so for example:
+        1. I give level name to LoadingLayer("level_one")
+        2. It loads all the assets from assets/sprites/level_one
+        3. It pushes a new level with name LevelLayer("level_one") to fsm
+        4. The LevelLayers LoadGame() will load saves/level_one.json
+      And then I have a way to intelligently load assets only from a level and entities from a specific level into a game. PERFECT!!!
+- [ ] Change the assets/sprites structure so I base it on level, So the loading layer should TAKE IN constructor parameter which is level name so that I can load assets
+      from a specific levle instead of whole game, so the first loading layer like the one I have now only load in assets for that specific level so change
+      it from this (assetManager.loadAllTextures("assets/sprites");) to (assetManager.loadAllTextures("assets/sprites/level_one");). So then in the actual game layer
+      when I want to go to the next level I push a new LoadingLayer but with "assets/sprites/level_two" so that LoadingLayer can load in for level two and then push
+      the next level with those assets and so on and so on.
+- [X] Change the asset manager to load in multiple assets and both LOAD and REGISTER them in the registry automatically with easy spriteId so that I can
+      set them easily in the entities.json when loading them in so I don't have to know the registry key before hand.
+- [X] [DEPENDENT ABOVE] Add a loading screen to load all the assets, then push game layer.
 - [X] [CONTROLLER NEW] Better would be to just create a pure data class cause I want serialization so it only contains numbers (easy to save inputs like that in JSON).
       So this logic module should not need to know about the movement system which should be implemented per framework (LibGDX, OpenGL, ...), so this
       component remains unchanged
