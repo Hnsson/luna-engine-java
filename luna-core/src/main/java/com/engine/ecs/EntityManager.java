@@ -103,6 +103,26 @@ public class EntityManager {
     return new ArrayList<>(entities);
   }
 
+  // Implemented using a set so that it is AND. Like if entity got <Component A>
+  // and <Component B> when called (Component A.class, Component B.class)
+  public List<Entity> getEntitiesWithAll(Class<? extends Component>... componentClasses) {
+    if (componentClasses.length == 0) {
+      return new ArrayList<>();
+    }
+    // get all entities that has first component
+    Set<Entity> result = new HashSet<>(
+        componentEntityMap.getOrDefault(componentClasses[0], Collections.emptyList()));
+
+    for (int i = 1; i < componentClasses.length; i++) {
+      // continuously check the next component
+      List<Entity> nextBatch = componentEntityMap.getOrDefault(componentClasses[i], Collections.emptyList());
+      // Remove those who had first component but not second, third, ...
+      result.retainAll(nextBatch);
+    }
+
+    return new ArrayList<>(result);
+  }
+
   public void clear() {
     entities.clear();
     componentEntityMap.clear();

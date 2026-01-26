@@ -54,14 +54,11 @@ public class GDXInputSystem implements GameSystem {
 
   @Override
   public void eventHandler() {
-    List<Entity> entities = entityManager.getEntitiesWith(PlayerController.class, SpriteRenderer.class);
+    List<Entity> entities = entityManager.getEntitiesWithAll(PlayerController.class, SpriteRenderer.class);
 
     for (Entity entity : entities) {
       PlayerController controller = entity.getComponent(PlayerController.class);
       SpriteRenderer sprite = entity.getComponent(SpriteRenderer.class);
-
-      if (controller == null)
-        return;
 
       controller.moveDir.set(0, 0);
 
