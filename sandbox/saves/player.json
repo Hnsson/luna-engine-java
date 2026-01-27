@@ -1,0 +1,82 @@
+{
+  "name": "Tav",
+  "id": 0,
+  "maxComponents": 32,
+  "components": [
+    {
+      "type": "com.engine.ecs.components.Transform",
+      "data": {
+        "position": {
+          "x": 201.95203,
+          "y": 374.245
+        },
+        "velocity": {
+          "x": 0.0,
+          "y": 0.0
+        }
+      }
+    },
+    {
+      "type": "com.engine.ecs.components.physics.BoxCollider",
+      "data": {
+        "width": 10,
+        "height": 10,
+        "offsetX": 0,
+        "offsetY": 0
+      }
+    },
+    {
+      "type": "com.engine.inventory.components.Inventory",
+      "data": {
+        "inventory": [
+          {
+            "itemId": "iron_sword",
+            "quantity": 1,
+            "maxQuantity": 999,
+            "currentDurability": 100,
+            "stackPrice": 50
+          },
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "capacity": 10
+      }
+    },
+    {
+      "type": "com.engine.ecs.components.logic.PlayerController",
+      "data": {
+        "speed": 150.0,
+        "moveDir": {
+          "x": 0.0,
+          "y": 0.0
+        }
+      }
+    },
+    {
+      "type": "com.engine.rendering.components.SpriteRenderer",
+      "data": {
+        "spriteId": "player_Warrior_Idle",
+        "width": 192.0,
+        "height": 192.0,
+        "flipX": false,
+        "flipY": false,
+        "xOffset": 0.0,
+        "yOffset": -48.0
+      }
+    }
+  ],
+  "activeComponents": [
+    1,
+    1,
+    1,
+    1,
+    1
+  ]
+}

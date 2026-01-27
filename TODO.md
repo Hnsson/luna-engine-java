@@ -11,12 +11,15 @@
         2. It loads all the assets from assets/sprites/level_one
         3. It pushes a new level with name LevelLayer("level_one") to fsm
         4. The LevelLayers LoadGame() will load saves/level_one.json
-      And then I have a way to intelligently load assets only from a level and entities from a specific level into a game. PERFECT!!!
+      And then I have a way to intelligently load assets only from a level and entities from a specific level into a game. Probably need a separate .json file for the player that
+      is always loaded I would guess because if not, when entering a new level, the player is recreated and doesn't save anything from previous level like items and so on.
 - [ ] Change the assets/sprites structure so I base it on level, So the loading layer should TAKE IN constructor parameter which is level name so that I can load assets
       from a specific levle instead of whole game, so the first loading layer like the one I have now only load in assets for that specific level so change
       it from this (assetManager.loadAllTextures("assets/sprites");) to (assetManager.loadAllTextures("assets/sprites/level_one");). So then in the actual game layer
       when I want to go to the next level I push a new LoadingLayer but with "assets/sprites/level_two" so that LoadingLayer can load in for level two and then push
       the next level with those assets and so on and so on.
+- [ ] When implementing level switching, remember to update the GDXAssetManager dispose(), read comment above it for more context.
+- [ ] Change so you load Level specific dialogue and not load every one every game layer (level).
 - [X] Change the asset manager to load in multiple assets and both LOAD and REGISTER them in the registry automatically with easy spriteId so that I can
       set them easily in the entities.json when loading them in so I don't have to know the registry key before hand.
 - [X] [DEPENDENT ABOVE] Add a loading screen to load all the assets, then push game layer.

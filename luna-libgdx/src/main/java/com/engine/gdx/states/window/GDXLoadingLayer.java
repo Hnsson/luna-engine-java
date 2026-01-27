@@ -9,6 +9,7 @@ import com.engine.gdx.rendering.GDXAssetManager;
 import com.engine.gdx.rendering.GDXRender;
 
 public class GDXLoadingLayer extends WindowLayer {
+  private String targetLevel;
   private GDXAssetManager assetManager;
   private StateMachine<WindowLayer> fsm;
 
@@ -16,8 +17,10 @@ public class GDXLoadingLayer extends WindowLayer {
   private Viewport viewport;
   private GDXRender renderer;
 
-  public GDXLoadingLayer(int width, int height, StateMachine<WindowLayer> fsm, GDXAssetManager assetManager) {
+  public GDXLoadingLayer(int width, int height, String targetLevel, StateMachine<WindowLayer> fsm,
+      GDXAssetManager assetManager) {
     super(width, height); // pass it up
+    this.targetLevel = targetLevel;
     this.fsm = fsm;
     this.assetManager = assetManager;
   }
@@ -34,7 +37,7 @@ public class GDXLoadingLayer extends WindowLayer {
     renderer = new GDXRender(assetManager, camera);
 
     System.out.println("Loading assets...");
-    assetManager.loadAllTextures("assets/sprites");
+    assetManager.loadAllTextures("assets/levels/" + targetLevel);
   }
 
   @Override
@@ -70,7 +73,7 @@ public class GDXLoadingLayer extends WindowLayer {
       assetManager.registerAllTextures();
       System.out.println("Assets loaded");
       fsm.popLayer();
-      fsm.pushLayer(new GDXGameLayer(width, height, assetManager));
+      fsm.pushLayer(new GDXGameLayer(width, height, targetLevel, assetManager));
     }
   }
 

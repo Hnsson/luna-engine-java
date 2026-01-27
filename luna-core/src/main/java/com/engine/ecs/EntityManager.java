@@ -2,6 +2,7 @@ package com.engine.ecs;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -46,9 +47,34 @@ public class EntityManager {
     }
   }
 
-  public void saveEntities(String path, FileContext fileContext, ECSSerializer serializer) {
-    String jsonContent = serializer.saveEntities(entities);
+  public Entity loadEntity(String path, FileContext fileContext, ECSSerializer serializer, boolean replace) {
+    if (replace)
+      clear();
 
+    String jsonContent = fileContext.readFile(path);
+    Entity loadedEntity = serializer.loadEntity(jsonContent);
+
+    if (loadedEntity != null) {
+      addEntity(loadedEntity);
+    }
+
+    return loadedEntity;
+  }
+
+  public void saveEntity(String path, Entity entity, FileContext fileContext, ECSSerializer serializer) {
+    String jsonContent = serializer.saveEntity(entity);
+
+    fileContext.writeFile(path, jsonContent);
+  }
+
+  public void saveEntities(String path, FileContext fileContext, ECSSerializer serializer, Entity... excludeEntities) {
+    // Exclude entities from being saved (because player is saved in separate file)
+    List<Entity> filteredEntities = new ArrayList<>(entities);
+    if (excludeEntities != null && excludeEntities.length > 0) {
+      filteredEntities.removeAll(Arrays.asList(excludeEntities));
+    }
+
+    String jsonContent = serializer.saveEntities(filteredEntities);
     fileContext.writeFile(path, jsonContent);
   }
 

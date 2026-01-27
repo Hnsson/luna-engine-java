@@ -78,6 +78,10 @@ public class GDXAssetManager implements IAssetManager, Disposable {
     return manager.getProgress();
   }
 
+  public void finishLoading() {
+    manager.finishLoading();
+  }
+
   @Override
   public void loadTexture(String path) {
     manager.load(path, Texture.class);
@@ -106,6 +110,12 @@ public class GDXAssetManager implements IAssetManager, Disposable {
     return manager.get(path, Texture.class);
   }
 
+  // [NOTE FOR SELF]: probably don't dispose manager like this, because this is
+  // called when a GameLayer is exiting which means that every level switch it
+  // will remove not only the level specific assets (which it should) it also
+  // unloads all the common assets (which it SHOULDN'T), so probably create custom
+  // unload function for all assets except common, then call that when switching
+  // level (in the exit() function in GameLayer)
   @Override
   public void dispose() {
     manager.dispose();

@@ -18,7 +18,14 @@ public class Sandbox extends ApplicationAdapter {
   public void create() {
     fsm = new StateMachine();
     assetManager = new GDXAssetManager();
-    fsm.pushLayer(new GDXLoadingLayer(DesktopLauncher.WINDOW_WIDTH, DesktopLauncher.WINDOW_HEIGHT, fsm, assetManager));
+    // load all common assets that will be consitent across all levels (so far
+    // player, will probably be more in future)
+    assetManager.loadAllTextures("assets/common");
+    assetManager.finishLoading();
+    assetManager.registerAllTextures();
+    //
+    fsm.pushLayer(new GDXLoadingLayer(DesktopLauncher.WINDOW_WIDTH, DesktopLauncher.WINDOW_HEIGHT, "level_one", fsm,
+        assetManager));
     overlay = new GDXOverlayLayer(DesktopLauncher.WINDOW_WIDTH, DesktopLauncher.WINDOW_HEIGHT, fsm);
     overlay.enter();
   }

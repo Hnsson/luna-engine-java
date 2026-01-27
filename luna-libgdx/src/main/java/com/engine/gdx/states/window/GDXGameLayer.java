@@ -10,6 +10,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.engine.GameSystem;
 import com.engine.dialogue.DialogueManager;
 import com.engine.ecs.ECSSerializer;
+import com.engine.ecs.Entity;
 import com.engine.ecs.EntityManager;
 import com.engine.fsm.states.WindowLayer;
 import com.engine.gdx.io.GDXFileHandler;
@@ -21,7 +22,9 @@ import com.engine.inventory.logic.ItemRegistry;
 import com.engine.rendering.RenderSystem;
 
 public class GDXGameLayer extends WindowLayer {
+  private String levelName;
   private boolean isPaused = false;
+  private Entity player;
 
   private OrthographicCamera camera;
   private Viewport viewport;
@@ -40,8 +43,9 @@ public class GDXGameLayer extends WindowLayer {
 
   private static final DialogueManager dialogueManager = new DialogueManager();
 
-  public GDXGameLayer(int width, int height, GDXAssetManager assetManager) {
+  public GDXGameLayer(int width, int height, String levelName, GDXAssetManager assetManager) {
     super(width, height); // pass it up
+    this.levelName = levelName;
     this.assetManager = assetManager;
   }
 
@@ -76,7 +80,7 @@ public class GDXGameLayer extends WindowLayer {
 
     fileHandler = new GDXFileHandler();
     serializer = new ECSSerializer();
-    loadGame();
+    loadGame(levelName);
   }
 
   @Override
@@ -121,7 +125,7 @@ public class GDXGameLayer extends WindowLayer {
       saveGame();
     }
     if (Gdx.input.isKeyJustPressed(inputSystem.getKeybind(GDXInputSystem.Mapping.LOAD))) {
-      loadGame();
+      loadGame(levelName);
     }
 
     for (GameSystem system : systems) {
@@ -134,12 +138,15 @@ public class GDXGameLayer extends WindowLayer {
     // That will append that to the file so I can easily load and save
     // levels based on the state name they got.
     // for example: "saves/" + this.stateId + ".json"
-    entityManager.saveEntities("saves/entities.json", fileHandler, serializer);
+    entityManager.saveEntities("saves/levels/" + levelName + "/entities.json", fileHandler, serializer, this.player);
+    // Save the player state
+    entityManager.saveEntity("saves/player.json", this.player, fileHandler, serializer);
     System.out.println("Saved game");
   }
 
-  private void loadGame() {
-    entityManager.loadEntities("saves/entities.json", fileHandler, serializer, true);
+  private void loadGame(String levelName) {
+    entityManager.loadEntities("saves/levels/" + levelName + "/entities.json", fileHandler, serializer, true);
+    this.player = entityManager.loadEntity("saves/player.json", fileHandler, serializer, false);
     System.out.println("Game loaded");
   }
 }
