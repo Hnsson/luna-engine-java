@@ -43,6 +43,7 @@ public class DialogueManager {
   }
 
   public void loadAllGraphs(String folderPath) {
+    graphStore.clear();
     try {
       URL url = getClass().getResource(folderPath);
       if (url == null) {
@@ -77,18 +78,17 @@ public class DialogueManager {
     DialogueGraph graph = DialogueLoader.load(path);
     if (graph != null) {
       graphStore.put(graph.getStartNode(), graph);
-      System.out.println("Loaded Graph entry point: " + graph.getStartNode());
     }
   }
 
-  public void startDialogue(String startNodeId, Entity player) {
+  public void startDialogue(String startNodeId, Entity initiator) {
     DialogueGraph graph = graphStore.get(startNodeId);
     if (graph == null) {
       System.err.println("Error: No graph found starting with ID: " + startNodeId);
       return;
     }
 
-    this.currentUser = player;
+    this.currentUser = initiator;
     this.activeGraph = graph;
 
     jumpToNode(startNodeId);
@@ -133,18 +133,13 @@ public class DialogueManager {
   }
 
   public void chooseOption(int optionIndex) {
-    // Options like (0, 1, 2, ...)
     if (!isActive())
       return;
 
-    int internalIndex = optionIndex - 1;
-
-    if (internalIndex < 0 || internalIndex >= validOptions.size()) {
-      System.out.println("Invalid choice.");
+    if (optionIndex < 0 || optionIndex >= validOptions.size())
       return;
-    }
 
-    DialogueOption selected = validOptions.get(internalIndex);
+    DialogueOption selected = validOptions.get(optionIndex);
 
     if (Boolean.TRUE.equals(selected.getEnd())) {
       endConversation();
@@ -154,7 +149,6 @@ public class DialogueManager {
   }
 
   private void endConversation() {
-    System.out.println("[End of Conversation]");
     this.activeNode = null;
     this.activeGraph = null;
     this.currentUser = null;
@@ -162,6 +156,12 @@ public class DialogueManager {
 
   public List<DialogueOption> getValidOptions() {
     return this.validOptions;
+  }
+
+  public String getCurrentNodeText() {
+    if (activeNode == null)
+      return null;
+    return activeNode.getText();
   }
 
   private void printCurrentState() {

@@ -12,7 +12,7 @@ public interface GameSystem {
   default void eventHandler() {
   }
 
-  default void update(float deltaTime) {
+  default void update(float delta) {
   }
 
   default void render() {

@@ -16,7 +16,7 @@ public class GDXMovementSystem implements GameSystem {
   }
 
   @Override
-  public void update(float deltaTime) {
+  public void update(float delta) {
     List<Entity> entities = entityManager.getEntitiesWith(PlayerController.class, Transform.class);
 
     for (Entity entity : entities) {
@@ -24,8 +24,8 @@ public class GDXMovementSystem implements GameSystem {
       Transform transform = entity.getComponent(Transform.class);
 
       if (controller != null && transform != null) {
-        transform.position.x += controller.moveDir.x * controller.speed * deltaTime;
-        transform.position.y += controller.moveDir.y * controller.speed * deltaTime;
+        transform.position.x += controller.moveDir.x * controller.speed * delta;
+        transform.position.y += controller.moveDir.y * controller.speed * delta;
       }
     }
   }

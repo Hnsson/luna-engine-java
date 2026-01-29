@@ -16,6 +16,7 @@ import com.engine.fsm.states.WindowLayer;
 import com.engine.gdx.io.GDXFileHandler;
 import com.engine.gdx.rendering.GDXAssetManager;
 import com.engine.gdx.rendering.GDXRender;
+import com.engine.gdx.systems.GDXDialogueSystem;
 import com.engine.gdx.systems.GDXInputSystem;
 import com.engine.gdx.systems.GDXMovementSystem;
 import com.engine.inventory.logic.ItemRegistry;
@@ -34,14 +35,13 @@ public class GDXGameLayer extends WindowLayer {
 
   private GDXInputSystem inputSystem;
   private GDXMovementSystem movementSystem;
+  private GDXDialogueSystem dialogueSystem;
   private List<GameSystem> systems;
 
   private EntityManager entityManager;
 
   private GDXFileHandler fileHandler;
   private ECSSerializer serializer;
-
-  private static final DialogueManager dialogueManager = new DialogueManager();
 
   public GDXGameLayer(int width, int height, String levelName, GDXAssetManager assetManager) {
     super(width, height); // pass it up
@@ -67,20 +67,24 @@ public class GDXGameLayer extends WindowLayer {
     renderer = new GDXRender(assetManager, camera);
 
     ItemRegistry.loadAllItems("/items/items.json");
-    dialogueManager.loadAllGraphs("/graphs");
 
     // Game systems:
     // Have input system still stored normally because I want to access keybindings
     inputSystem = new GDXInputSystem(entityManager);
     movementSystem = new GDXMovementSystem(entityManager);
+    dialogueSystem = new GDXDialogueSystem(levelName, new DialogueManager(), renderer, inputSystem);
 
     systems.add(inputSystem);
     systems.add(new RenderSystem(renderer, entityManager, true));
     systems.add(movementSystem);
+    systems.add(dialogueSystem);
 
     fileHandler = new GDXFileHandler();
     serializer = new ECSSerializer();
     loadGame(levelName);
+    // REMOVE THIS LATER WHEN IMPLEMENTING SMART WAY TO START DIALOGUE,
+    // THIS JUST TEST WORK FOR LEVEL ONE!!!!
+    dialogueSystem.startDialogue(entityManager.getEntity(0), entityManager.getEntity(1));
   }
 
   @Override
@@ -109,8 +113,13 @@ public class GDXGameLayer extends WindowLayer {
   @Override
   public void update(float delta) {
     if (!isPaused) {
-      for (GameSystem system : systems) {
-        system.update(delta);
+      if (dialogueSystem.isActive()) {
+        dialogueSystem.update(delta);
+        // Add other systems that should also work during conversation
+      } else {
+        for (GameSystem system : systems) {
+          system.update(delta);
+        }
       }
     }
     camera.update();
