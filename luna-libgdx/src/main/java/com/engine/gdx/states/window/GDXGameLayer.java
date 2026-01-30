@@ -34,6 +34,7 @@ public class GDXGameLayer extends WindowLayer {
   private GDXRender renderer;
 
   private GDXInputSystem inputSystem;
+  private RenderSystem renderSystem;
   private GDXMovementSystem movementSystem;
   private GDXDialogueSystem dialogueSystem;
   private List<GameSystem> systems;
@@ -71,11 +72,12 @@ public class GDXGameLayer extends WindowLayer {
     // Game systems:
     // Have input system still stored normally because I want to access keybindings
     inputSystem = new GDXInputSystem(entityManager);
+    renderSystem = new RenderSystem(renderer, entityManager, false);
     movementSystem = new GDXMovementSystem(entityManager);
     dialogueSystem = new GDXDialogueSystem(levelName, new DialogueManager(), renderer, inputSystem);
 
     systems.add(inputSystem);
-    systems.add(new RenderSystem(renderer, entityManager, true));
+    systems.add(renderSystem);
     systems.add(movementSystem);
     systems.add(dialogueSystem);
 
@@ -129,6 +131,9 @@ public class GDXGameLayer extends WindowLayer {
   public void eventHandler() {
     if (Gdx.input.isKeyJustPressed(inputSystem.getKeybind(GDXInputSystem.Mapping.PAUSE))) {
       isPaused = !isPaused;
+    }
+    if (Gdx.input.isKeyJustPressed(inputSystem.getKeybind(GDXInputSystem.Mapping.DEBUG))) {
+      renderSystem.toggleDebugMode();
     }
     if (Gdx.input.isKeyJustPressed(inputSystem.getKeybind(GDXInputSystem.Mapping.SAVE))) {
       saveGame();

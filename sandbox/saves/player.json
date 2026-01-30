@@ -2,6 +2,7 @@
   "name": "Tav",
   "id": 0,
   "maxComponents": 32,
+  "layer": "PLAYER",
   "components": [
     {
       "type": "com.engine.ecs.components.Transform",

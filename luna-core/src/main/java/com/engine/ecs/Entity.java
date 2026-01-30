@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
 
+import com.engine.rendering.RenderLayerRegistry.Layers;
+
 public class Entity {
   private static int nextId = 0;
 
@@ -14,35 +16,33 @@ public class Entity {
   private byte maxComponents = 32;
   private List<Component> components = new ArrayList<>();
   private BitSet activeComponents;
+  private Layers layer = Layers.DEFAULT;
 
   public Entity() {
-    this.id = nextId++;
-    this.name = "Entity_" + this.id;
-    this.components = new ArrayList<>();
-    this.activeComponents = new BitSet(this.maxComponents);
+    this(null);
   }
 
   public Entity(String name) {
-    this.id = nextId++;
-    if (name == null) {
-      this.name = "Entity_" + this.id;
-    } else {
-      this.name = name;
-    }
-    this.components = new ArrayList<>();
-    this.activeComponents = new BitSet(this.maxComponents);
+    this(name, null);
   }
 
   public Entity(String name, String startDialogueNodeId) {
+    this(name, startDialogueNodeId, null);
+  }
+
+  public Entity(String name, String startDialogueNodeId, Layers layer) {
     this.id = nextId++;
+
     if (name == null) {
       this.name = "Entity_" + this.id;
     } else {
       this.name = name;
     }
+
     this.components = new ArrayList<>();
     this.activeComponents = new BitSet(this.maxComponents);
     this.startDialogueNodeId = startDialogueNodeId;
+    this.layer = layer;
   }
 
   public int getId() {
@@ -55,6 +55,10 @@ public class Entity {
 
   public String getDialogueNodeId() {
     return this.startDialogueNodeId;
+  }
+
+  public Layers getLayer() {
+    return this.layer;
   }
 
   public static void clear() {

@@ -4,6 +4,7 @@
     "id": 1,
     "startDialogueNodeId": "blacksmith_start",
     "maxComponents": 32,
+    "layer": "DEFAULT",
     "components": [
       {
         "type": "com.engine.ecs.components.Transform",

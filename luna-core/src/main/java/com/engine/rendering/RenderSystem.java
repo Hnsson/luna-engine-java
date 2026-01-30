@@ -41,9 +41,20 @@ public class RenderSystem implements GameSystem {
     renderUI();
   }
 
+  public void toggleDebugMode() {
+    this.debugMode = !debugMode;
+  }
+
   public void renderEntities() {
     context.beginFrame();
     List<Entity> entities = entityManager.getEntitiesWith(Transform.class, SpriteRenderer.class);
+
+    // Based on entity layer order (smallest to largest):
+    entities.sort((e1, e2) -> {
+      int layer1 = RenderLayerRegistry.getOrder(e1.getLayer());
+      int layer2 = RenderLayerRegistry.getOrder(e2.getLayer());
+      return Integer.compare(layer1, layer2);
+    });
 
     for (Entity entity : entities) {
       if (!entity.hasComponent(Transform.class))

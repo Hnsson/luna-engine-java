@@ -85,7 +85,7 @@ class DialogueManagerTest {
     manager.addGraph(graph);
     manager.startDialogue("start", player);
 
-    manager.chooseOption(1);
+    manager.chooseOption(0);
 
     assertFalse(manager.isActive(), "Dialogue should end when option with end=true is chosen");
   }
