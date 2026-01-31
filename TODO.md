@@ -42,7 +42,7 @@
 - [ ] Implement the BoxCollider with the collision logic and then Implement a CircleCollider.
 - [ ] Probably need a camera interface because the cameras are different in each framework? If I don't just wanna have it like now where the framework
       Implement handles that at their own accord.
-- [ ] Implement a render layer registry so I can register layer names (which is also stored in a SpriteRenderer component) that gets a certain value
+- [X] Implement a render layer registry so I can register layer names (which is also stored in a SpriteRenderer component) that gets a certain value
       (what z-index to be rendered at). So that the render system sorts the entities based on value of the layer their SpriteRenderer has, so negative
       to positive in the list so that the sprites furthest back (negative) gets rendered first: (20, 10, -10, 100, -1000) -> (-1000, -10, 10, 20, 100)
 - [ ] Implement a TradeManager in the inventory-system so that two inventories can perform a trade, this includes adding currency to a inventory that

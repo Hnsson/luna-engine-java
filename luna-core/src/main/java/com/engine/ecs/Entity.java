@@ -15,7 +15,7 @@ public class Entity {
 
   private byte maxComponents = 32;
   private List<Component> components = new ArrayList<>();
-  private BitSet activeComponents;
+  private transient BitSet activeComponents;
   private Layers layer = Layers.DEFAULT;
 
   public Entity() {
@@ -105,7 +105,23 @@ public class Entity {
   }
 
   public void init() {
+    // Moved the initalization from JSON to objects for the components here so its
+    // done by the entity instead of in the serializer because it was messy code in
+    // the serializer which feels more logical to be here:
+    if (this.activeComponents == null) {
+      this.activeComponents = new BitSet(this.maxComponents);
+    }
+
+    if (this.id >= nextId) {
+      nextId = this.id + 1;
+    }
+
     for (Component cmp : this.components) {
+      cmp.entity = this;
+
+      int typeId = ComponentRegistry.getComponentTypeID(cmp.getClass());
+      this.activeComponents.set(typeId);
+
       cmp.init();
     }
   }

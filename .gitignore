@@ -3,5 +3,6 @@
 .settings/
 .factorypath
 .gradle/
+.vscode/
 build/
 bin/

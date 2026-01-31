@@ -57,9 +57,7 @@ public class ECSSerializer {
     Entity loadedEntity = mainGson.fromJson(json, Entity.class);
 
     if (loadedEntity.getComponents() != null) {
-      for (Component cmp : loadedEntity.getComponents()) {
-        cmp.entity = loadedEntity;
-      }
+      loadedEntity.init();
     }
     return loadedEntity;
   }
@@ -92,11 +90,7 @@ public class ECSSerializer {
     // it's owner to all components (is there a better way?)
     if (loadedEntities != null) {
       for (Entity entity : loadedEntities) {
-        if (entity.getComponents() != null) {
-          for (Component cmp : entity.getComponents()) {
-            cmp.entity = entity;
-          }
-        }
+        entity.init();
       }
 
       return loadedEntities;
