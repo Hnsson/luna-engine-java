@@ -2,6 +2,8 @@ package com.engine.gdx.rendering;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
@@ -87,13 +89,26 @@ public class GDXAssetManager implements IAssetManager, Disposable {
     manager.load(path, Texture.class);
   }
 
+  // Found a really nice way to get the specific width and height for sprites in a
+  // spritesheet from stackoverflow (R.I.P the GOAT):
+  // (https://stackoverflow.com/questions/297426/whats-the-best-way-of-reading-a-sprite-sheet-in-java)
+  // Where I can just use the singular sprite in the spritesheets size in the
+  // filename so I can easily index the frames
+  private static final Pattern SPRITESIZE_PATTERN = Pattern.compile("_(\\d+)x(\\d+)$");
+
   @Override
   public void registerTexture(String spriteId, String filePath) {
-    // Will need to find a good way to handle spritesheet, now I just hard coded
-    // width and height for sprite in sprite sheet because I know the sprites are
-    // that width and height, but has to find a better way.
-    // Texture tex = manager.get(filePath, Texture.class);
-    SpriteRegistry.register(spriteId, new SpriteDefinition(filePath, 0, 0, 192, 192));
+    String fileName = filePath.substring(0, filePath.lastIndexOf("."));
+    Matcher matcher = SPRITESIZE_PATTERN.matcher(fileName);
+
+    if (matcher.find()) {
+      int spriteW = Integer.parseInt(matcher.group(1));
+      int spriteH = Integer.parseInt(matcher.group(2));
+
+      SpriteRegistry.register(spriteId, new SpriteDefinition(filePath, spriteW, spriteH, true));
+    } else {
+      SpriteRegistry.register(spriteId, new SpriteDefinition(filePath));
+    }
   }
 
   @Override

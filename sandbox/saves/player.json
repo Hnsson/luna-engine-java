@@ -20,10 +20,19 @@
     {
       "type": "com.engine.ecs.components.physics.BoxCollider",
       "data": {
-        "width": 10,
-        "height": 10,
-        "offsetX": 0,
-        "offsetY": 0
+        "width": 100,
+        "height": 100,
+        "offsetX": -50,
+        "offsetY": 0,
+        "isTrigger": false
+      }
+    },
+    {
+      "type": "com.engine.ecs.components.physics.RigidBody",
+      "data": {
+        "useGravity": false,
+        "mass": 70.0,
+        "immovable": false
       }
     },
     {
@@ -63,21 +72,15 @@
     {
       "type": "com.engine.rendering.components.SpriteRenderer",
       "data": {
-        "spriteId": "player_Warrior_Idle",
+        "spriteId": "player_Warrior_Idle_192x192",
         "width": 192.0,
         "height": 192.0,
         "flipX": false,
         "flipY": false,
         "xOffset": 0.0,
-        "yOffset": -48.0
+        "yOffset": -48.0,
+        "currentFrameIndex": 0
       }
     }
-  ],
-  "activeComponents": [
-    1,
-    1,
-    1,
-    1,
-    1
   ]
 }

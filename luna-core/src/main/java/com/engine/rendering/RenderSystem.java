@@ -69,18 +69,17 @@ public class RenderSystem implements GameSystem {
         SpriteRenderer sprite = entity.getComponent(SpriteRenderer.class);
         SpriteDefinition def = SpriteRegistry.get(sprite.spriteId);
 
-        width = sprite.width;
-        height = sprite.height;
-        xOffset = sprite.xOffset;
-        yOffset = sprite.yOffset;
-
-        float drawX = transform.position.x - (width / 2f) + xOffset;
-        float drawY = transform.position.y + yOffset;
-
         if (def != null) {
-          context.drawSprite(def, drawX, drawY,
-              width, height, sprite.flipX,
-              sprite.flipY);
+          width = sprite.width;
+          height = sprite.height;
+          xOffset = sprite.xOffset;
+          yOffset = sprite.yOffset;
+
+          float drawX = transform.position.x - (width / 2f) + xOffset;
+          float drawY = transform.position.y + yOffset;
+
+          context.drawSprite(def, sprite.currentFrameIndex, drawX, drawY,
+              width, height, sprite.flipX, sprite.flipY);
         } else {
           System.err.println("[ERROR::RENDERSYSTEM] Sprite defintion not found");
         }
@@ -116,7 +115,9 @@ public class RenderSystem implements GameSystem {
       // Draw a green box on coliders
       if (entity.hasComponent(BoxCollider.class)) {
         BoxCollider boxCollider = entity.getComponent(BoxCollider.class);
-        context.drawRectangle(transform.position.x, transform.position.y, boxCollider.width, boxCollider.height, 0, 1,
+        context.drawRectangle(transform.position.x + boxCollider.offsetX, transform.position.y + boxCollider.offsetY,
+            boxCollider.width,
+            boxCollider.height, 0, 1,
             0, 1);
       }
 

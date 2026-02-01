@@ -33,7 +33,8 @@ public interface IRenderContext {
 
   void resize(int width, int height);
 
-  void drawSprite(SpriteDefinition def, float x, float y, float width, float height, boolean flipX, boolean flipY);
+  void drawSprite(SpriteDefinition def, int frameIndex, float worldX, float worldY, float width, float height,
+      boolean flipX, boolean flipY);
 
   void drawRectangle(float x, float y, float width, float height, float r, float g, float b, float a);
 

@@ -16,6 +16,7 @@ import com.engine.fsm.states.WindowLayer;
 import com.engine.gdx.io.GDXFileHandler;
 import com.engine.gdx.rendering.GDXAssetManager;
 import com.engine.gdx.rendering.GDXRender;
+import com.engine.gdx.systems.GDXCollisionSystem;
 import com.engine.gdx.systems.GDXDialogueSystem;
 import com.engine.gdx.systems.GDXInputSystem;
 import com.engine.gdx.systems.GDXMovementSystem;
@@ -37,6 +38,7 @@ public class GDXGameLayer extends WindowLayer {
   private RenderSystem renderSystem;
   private GDXMovementSystem movementSystem;
   private GDXDialogueSystem dialogueSystem;
+  private GDXCollisionSystem collisionSystem;
   private List<GameSystem> systems;
 
   private EntityManager entityManager;
@@ -75,18 +77,21 @@ public class GDXGameLayer extends WindowLayer {
     renderSystem = new RenderSystem(renderer, entityManager, false);
     movementSystem = new GDXMovementSystem(entityManager);
     dialogueSystem = new GDXDialogueSystem(levelName, new DialogueManager(), renderer, inputSystem);
+    collisionSystem = new GDXCollisionSystem(entityManager);
 
     systems.add(inputSystem);
     systems.add(renderSystem);
     systems.add(movementSystem);
     systems.add(dialogueSystem);
+    systems.add(collisionSystem);
 
     fileHandler = new GDXFileHandler();
     serializer = new ECSSerializer();
     loadGame(levelName);
     // REMOVE THIS LATER WHEN IMPLEMENTING SMART WAY TO START DIALOGUE,
     // THIS JUST TEST WORK FOR LEVEL ONE!!!!
-    dialogueSystem.startDialogue(entityManager.getEntity(0), entityManager.getEntity(1));
+    // dialogueSystem.startDialogue(entityManager.getEntity(0),
+    // entityManager.getEntity(1));
   }
 
   @Override

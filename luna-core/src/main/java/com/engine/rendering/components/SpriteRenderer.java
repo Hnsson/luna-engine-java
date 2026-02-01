@@ -23,21 +23,23 @@ public class SpriteRenderer extends Component {
   public float xOffset = 0;
   public float yOffset = 0;
 
+  public int currentFrameIndex = 0;
+
   public SpriteRenderer() {
-    this("default", 0, 0, 0, 0);
+    this("default", 0, 0, 0, 0, 0);
   }
 
   public SpriteRenderer(String spriteId, float width, float height) {
-    this.spriteId = spriteId;
-    this.width = width;
-    this.height = height;
+    this(spriteId, width, height, 0, 0, 0);
   }
 
-  public SpriteRenderer(String spriteId, float width, float height, float xOffset, float yOffset) {
+  public SpriteRenderer(String spriteId, float width, float height, float xOffset, float yOffset,
+      int currentFrameIndex) {
     this.spriteId = spriteId;
     this.width = width;
     this.height = height;
     this.xOffset = xOffset;
     this.yOffset = yOffset;
+    this.currentFrameIndex = currentFrameIndex;
   }
 }

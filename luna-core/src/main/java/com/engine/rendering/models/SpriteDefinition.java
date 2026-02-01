@@ -14,11 +14,33 @@ public class SpriteDefinition {
   public int x, y;
   public int width, height;
 
+  public boolean useFullTexture;
+  public boolean isSpritesheet;
+
+  // If i want to use full texture
+  public SpriteDefinition(String path) {
+    this.texturePath = path;
+    this.useFullTexture = true;
+    this.isSpritesheet = false;
+  }
+
+  // If I want to manual crop texture
   public SpriteDefinition(String path, int x, int y, int width, int height) {
     this.texturePath = path;
     this.x = x;
     this.y = y;
     this.width = width;
     this.height = height;
+    this.useFullTexture = false;
+    this.isSpritesheet = false;
+  }
+
+  // If I want grid based on the spritesheet
+  public SpriteDefinition(String path, int tileWidth, int tileHeight, boolean isSpritesheet) {
+    this.texturePath = path;
+    this.width = tileWidth;
+    this.height = tileHeight;
+    this.isSpritesheet = isSpritesheet;
+    this.useFullTexture = false;
   }
 }

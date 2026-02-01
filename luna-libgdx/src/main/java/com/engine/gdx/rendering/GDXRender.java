@@ -96,19 +96,52 @@ public class GDXRender implements IRenderContext, Disposable {
   }
 
   @Override
-  public void drawSprite(SpriteDefinition def, float worldX, float worldY, float width, float height, boolean flipX,
-      boolean flipY) {
+  public void drawSprite(SpriteDefinition def, int frameIndex, float worldX, float worldY, float width, float height,
+      boolean flipX, boolean flipY) {
     Texture texture = assetManager.get(def.texturePath);
     if (texture == null) {
       System.out.println("[ERROR::GDXRENDER] Texture is null for " + def.texturePath);
       return;
     }
 
+    int srcX, srcY, srcW, srcH;
+
+    // Like in spritedef (grid spritesheet)
+    if (def.isSpritesheet) {
+      srcW = def.width;
+      srcH = def.height;
+
+      int cols = texture.getWidth() / srcW;
+      if (cols == 0)
+        cols = 1;
+
+      int col = frameIndex % cols;
+      int row = frameIndex / cols;
+
+      srcX = col * srcW;
+      srcY = row * srcH;
+    }
+    // full texture
+    else if (def.useFullTexture) {
+      srcX = 0;
+      srcY = 0;
+      srcW = texture.getWidth();
+      srcH = texture.getHeight();
+    }
+    // manual crop
+    else {
+      srcX = def.x;
+      srcY = def.y;
+      srcW = def.width;
+      srcH = def.height;
+    }
+
     batch.draw(
         texture,
         worldX, worldY,
-        width, height, def.x, def.y,
-        def.width, def.height,
+        width, height,
+        srcX, srcY,
+        srcW, srcH,
         flipX, flipY);
   }
 
