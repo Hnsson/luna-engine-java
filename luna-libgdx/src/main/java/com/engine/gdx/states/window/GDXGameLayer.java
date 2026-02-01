@@ -13,6 +13,7 @@ import com.engine.ecs.ECSSerializer;
 import com.engine.ecs.Entity;
 import com.engine.ecs.EntityManager;
 import com.engine.fsm.states.WindowLayer;
+import com.engine.gdx.GDXScriptContext;
 import com.engine.gdx.io.GDXFileHandler;
 import com.engine.gdx.rendering.GDXAssetManager;
 import com.engine.gdx.rendering.GDXRender;
@@ -20,6 +21,7 @@ import com.engine.gdx.systems.GDXCollisionSystem;
 import com.engine.gdx.systems.GDXDialogueSystem;
 import com.engine.gdx.systems.GDXInputSystem;
 import com.engine.gdx.systems.GDXMovementSystem;
+import com.engine.gdx.systems.GDXScriptSystem;
 import com.engine.inventory.logic.ItemRegistry;
 import com.engine.rendering.RenderSystem;
 
@@ -39,7 +41,10 @@ public class GDXGameLayer extends WindowLayer {
   private GDXMovementSystem movementSystem;
   private GDXDialogueSystem dialogueSystem;
   private GDXCollisionSystem collisionSystem;
+  private GDXScriptSystem scriptSystem;
   private List<GameSystem> systems;
+
+  private GDXScriptContext scriptContext;
 
   private EntityManager entityManager;
 
@@ -79,11 +84,15 @@ public class GDXGameLayer extends WindowLayer {
     dialogueSystem = new GDXDialogueSystem(levelName, new DialogueManager(), renderer, inputSystem);
     collisionSystem = new GDXCollisionSystem(entityManager);
 
+    scriptContext = new GDXScriptContext(entityManager, inputSystem, dialogueSystem, renderer);
+    scriptSystem = new GDXScriptSystem(scriptContext);
+
     systems.add(inputSystem);
     systems.add(renderSystem);
     systems.add(movementSystem);
     systems.add(dialogueSystem);
     systems.add(collisionSystem);
+    systems.add(scriptSystem);
 
     fileHandler = new GDXFileHandler();
     serializer = new ECSSerializer();

@@ -22,7 +22,7 @@ public class GDXDialogueSystem implements GameSystem {
   private int currentSelectionIndex = 0;
 
   private float stringCompleteness = 0;
-  private float textSpeed = 10;
+  private float textSpeed = 20;
   private boolean textFinished = false;
 
   public GDXDialogueSystem(String levelName, DialogueManager manager, GDXRender renderer, GDXInputSystem input) {
@@ -79,7 +79,7 @@ public class GDXDialogueSystem implements GameSystem {
       return;
 
     renderer.beginUIShapeFrame();
-    renderer.drawFilledRectangle(50, 50, 700, 150, 0, 0, 0, 0.8f);
+    renderer.drawFilledRectangle(50, 10, 700, 200, 0, 0, 0, 0.8f);
     renderer.endUIShapeFrame();
 
     renderer.beginUIFrame();

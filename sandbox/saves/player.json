@@ -69,7 +69,7 @@
       }
     },
     {
-      "type": "com.engine.gdx.scripts.PlayerTriggerScript",
+      "type": "com.engine.gdx.scripts.DialogueTriggerScript",
       "data": {}
     },
     {

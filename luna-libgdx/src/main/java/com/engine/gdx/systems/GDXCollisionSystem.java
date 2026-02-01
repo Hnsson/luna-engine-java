@@ -14,7 +14,7 @@ import com.engine.ecs.components.Collider;
 import com.engine.ecs.components.physics.BoxCollider;
 import com.engine.ecs.components.physics.RigidBody;
 import com.engine.gdx.CollisionPair;
-import com.engine.gdx.Script;
+import com.engine.Script;
 
 public class GDXCollisionSystem implements GameSystem {
   private EntityManager entityManager;
@@ -60,9 +60,10 @@ public class GDXCollisionSystem implements GameSystem {
           continue;
 
         if (isColliding(e1, e2)) {
-          if (c2.isTrigger || c1.isTrigger) // like unity only when one is isTrigger
+          if (c1.isTrigger || c2.isTrigger) // like unity only when one is isTrigger
             activeCollisions.add(new CollisionPair(e1, e2));
-          resolve(e1, e2);
+          if (!c1.isTrigger && !c2.isTrigger)
+            resolve(e1, e2);
         }
       }
     }

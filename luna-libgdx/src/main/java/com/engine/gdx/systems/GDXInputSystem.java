@@ -18,7 +18,7 @@ public class GDXInputSystem implements GameSystem {
   private Map<Mapping, Integer> inputMapping = new HashMap<>();
 
   public static enum Mapping {
-    LEFT, RIGHT, UP, DOWN, PAUSE, SAVE, LOAD, ENTER, DEBUG
+    LEFT, RIGHT, UP, DOWN, PAUSE, SAVE, LOAD, ENTER, DEBUG, INTERACT
   };
 
   public GDXInputSystem(EntityManager entityManager) {
@@ -33,6 +33,7 @@ public class GDXInputSystem implements GameSystem {
     inputMapping.put(Mapping.LOAD, Input.Keys.F8);
     inputMapping.put(Mapping.ENTER, Input.Keys.ENTER);
     inputMapping.put(Mapping.DEBUG, Input.Keys.F12);
+    inputMapping.put(Mapping.INTERACT, Input.Keys.E);
   }
 
   public void changeKeybind(Mapping key, int value) {

@@ -1,6 +1,5 @@
 package com.engine.ecs;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -11,6 +10,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.engine.FileContext;
+import com.engine.Script;
 
 /*
  * Will manage the storage of all entities.
@@ -21,6 +21,9 @@ import com.engine.FileContext;
  * on components
  */
 public class EntityManager {
+  // Add a list for the script system to more easily use because they are quite
+  // separate
+  private List<Entity> entitiesWithScripts = new ArrayList<>();
   private List<Entity> entities = new ArrayList<>();
   private Map<Class<? extends Component>, List<Entity>> componentEntityMap = new HashMap<>();
 
@@ -80,13 +83,19 @@ public class EntityManager {
 
   public void addEntity(Entity entity) {
     entities.add(entity);
+    boolean hasScript = false;
 
     for (Component component : entity.getComponents()) {
       // safety, creates list if empty
       componentEntityMap
           .computeIfAbsent(component.getClass(), k -> new ArrayList<>())
           .add(entity);
+      if (component instanceof Script)
+        hasScript = true;
     }
+
+    if (hasScript)
+      entitiesWithScripts.add(entity);
   }
 
   public void removeEntity(Entity entity) {
@@ -94,6 +103,7 @@ public class EntityManager {
       return;
 
     entities.remove(entity);
+    entitiesWithScripts.remove(entity);
 
     for (Component component : entity.getComponents()) {
       Class<? extends Component> type = component.getClass();
@@ -107,6 +117,10 @@ public class EntityManager {
 
   public List<Entity> getEntities() {
     return entities;
+  }
+
+  public List<Entity> getEntitiesWithScripts() {
+    return entitiesWithScripts;
   }
 
   public Entity getEntity(int index) {
