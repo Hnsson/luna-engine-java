@@ -1,6 +1,5 @@
 {
   "name": "Tav",
-  "id": 0,
   "maxComponents": 32,
   "layer": "PLAYER",
   "components": [
@@ -68,6 +67,10 @@
           "y": 0.0
         }
       }
+    },
+    {
+      "type": "com.engine.gdx.scripts.PlayerTriggerScript",
+      "data": {}
     },
     {
       "type": "com.engine.rendering.components.SpriteRenderer",

@@ -1,18 +1,27 @@
 package com.engine.gdx.systems;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.badlogic.gdx.math.Rectangle;
 import com.engine.GameSystem;
+import com.engine.ecs.Component;
 import com.engine.ecs.Entity;
 import com.engine.ecs.EntityManager;
 import com.engine.ecs.components.Transform;
 import com.engine.ecs.components.Collider;
 import com.engine.ecs.components.physics.BoxCollider;
 import com.engine.ecs.components.physics.RigidBody;
+import com.engine.gdx.Script;
 
 public class GDXCollisionSystem implements GameSystem {
   private EntityManager entityManager;
+
+  // Add some kind of memory so I know to call onTriggerLeave
+  private Set<String> activeCollisions;
+  private Set<String> previousCollisions;
+
   // read that object reusing can help with performance with the garbace
   // collector, so instead of creating new rectangles every check I can have
   // rectangles already defined and I just change them based on the entities
@@ -23,10 +32,17 @@ public class GDXCollisionSystem implements GameSystem {
 
   public GDXCollisionSystem(EntityManager entityManager) {
     this.entityManager = entityManager;
+    this.activeCollisions = new HashSet<>();
+    this.previousCollisions = new HashSet<>();
   }
 
   @Override
   public void update(float delta) {
+    // swap from last frame
+    previousCollisions.clear();
+    previousCollisions.addAll(activeCollisions);
+    activeCollisions.clear();
+
     List<Entity> entities = entityManager.getEntitiesWith(Transform.class, Collider.class, RigidBody.class);
 
     for (int i = 0; i < entities.size(); i++) {
@@ -43,12 +59,23 @@ public class GDXCollisionSystem implements GameSystem {
           continue;
 
         if (isColliding(e1, e2)) {
+          String collisionKey = createKey(e1, e2);
+          activeCollisions.add(collisionKey);
           resolve(e1, e2);
-
-          // triggerCollision(e1, e2);
         }
-
       }
+    }
+
+    handleTriggers(entities);
+  }
+
+  private String createKey(Entity e1, Entity e2) {
+    int id1 = e1.getId(), id2 = e2.getId();
+
+    if (id1 < id2) {
+      return id1 + ":" + id2;
+    } else {
+      return id2 + ":" + id1;
     }
   }
 
@@ -62,7 +89,7 @@ public class GDXCollisionSystem implements GameSystem {
     return false;
   }
 
-  public boolean isColliding(Entity e1, Entity e2) {
+  private boolean isColliding(Entity e1, Entity e2) {
     Transform t1 = e1.getComponent(Transform.class);
     Collider c1 = e1.getComponent(Collider.class);
 
@@ -72,11 +99,66 @@ public class GDXCollisionSystem implements GameSystem {
     return isColliding(t1, c1, t2, c2);
   }
 
-  public void triggerCollision(Entity e1, Entity e2) {
-    System.out.println("[" + e1.getName() + "] AND [" + e2.getName() + "] IS COLLDING!");
+  private void handleTriggers(List<Entity> entities) {
+    // handle onTriggerEnter
+    for (String collisionKey : activeCollisions) {
+      if (!previousCollisions.contains(collisionKey)) {
+        Entity[] pair = getEntitiesFromKey(collisionKey, entities);
+        if (pair != null) {
+          // Trigger each others script so entity1 gets entity2 in trigger and the other
+          // way around
+          triggerCollision(pair[0], pair[1], true);
+          triggerCollision(pair[1], pair[0], true);
+        }
+      }
+    }
+    // handle onTriggerLeave
+    for (String collisionKey : previousCollisions) {
+      if (!activeCollisions.contains(collisionKey)) {
+        Entity[] pair = getEntitiesFromKey(collisionKey, entities);
+        if (pair != null) {
+          triggerCollision(pair[0], pair[1], false);
+          triggerCollision(pair[1], pair[0], false);
+        }
+      }
+    }
+
   }
 
-  public void resolve(Entity e1, Entity e2) {
+  private Entity[] getEntitiesFromKey(String collisionKey, List<Entity> entities) {
+    String[] ids = collisionKey.split(":");
+    int id1 = Integer.parseInt(ids[0]);
+    int id2 = Integer.parseInt(ids[1]);
+
+    Entity e1 = null, e2 = null;
+    for (Entity e : entities) {
+      if (e.getId() == id1)
+        e1 = e;
+      if (e.getId() == id2)
+        e2 = e;
+      if (e1 != null && e2 != null)
+        return new Entity[] { e1, e2 };
+    }
+    return null;
+  }
+
+  private void triggerCollision(Entity owner, Entity trigger, boolean enter) {
+    List<Component> components = owner.getComponents();
+
+    for (Component cmp : components) {
+      if (cmp instanceof Script) {
+        Script script = (Script) cmp;
+
+        if (enter) {
+          script.onTriggerEnter(trigger);
+        } else {
+          script.onTriggerLeave(trigger);
+        }
+      }
+    }
+  }
+
+  private void resolve(Entity e1, Entity e2) {
     if (!e1.hasComponent(RigidBody.class) || !e2.hasComponent(RigidBody.class))
       return;
 
