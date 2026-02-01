@@ -13,14 +13,15 @@ import com.engine.ecs.components.Transform;
 import com.engine.ecs.components.Collider;
 import com.engine.ecs.components.physics.BoxCollider;
 import com.engine.ecs.components.physics.RigidBody;
+import com.engine.gdx.CollisionPair;
 import com.engine.gdx.Script;
 
 public class GDXCollisionSystem implements GameSystem {
   private EntityManager entityManager;
 
   // Add some kind of memory so I know to call onTriggerLeave
-  private Set<String> activeCollisions;
-  private Set<String> previousCollisions;
+  private Set<CollisionPair> activeCollisions;
+  private Set<CollisionPair> previousCollisions;
 
   // read that object reusing can help with performance with the garbace
   // collector, so instead of creating new rectangles every check I can have
@@ -59,24 +60,14 @@ public class GDXCollisionSystem implements GameSystem {
           continue;
 
         if (isColliding(e1, e2)) {
-          String collisionKey = createKey(e1, e2);
-          activeCollisions.add(collisionKey);
+          if (c2.isTrigger || c1.isTrigger) // like unity only when one is isTrigger
+            activeCollisions.add(new CollisionPair(e1, e2));
           resolve(e1, e2);
         }
       }
     }
 
-    handleTriggers(entities);
-  }
-
-  private String createKey(Entity e1, Entity e2) {
-    int id1 = e1.getId(), id2 = e2.getId();
-
-    if (id1 < id2) {
-      return id1 + ":" + id2;
-    } else {
-      return id2 + ":" + id1;
-    }
+    handleTriggers();
   }
 
   private boolean isColliding(Transform t1, Collider c1, Transform t2, Collider c2) {
@@ -99,47 +90,21 @@ public class GDXCollisionSystem implements GameSystem {
     return isColliding(t1, c1, t2, c2);
   }
 
-  private void handleTriggers(List<Entity> entities) {
+  private void handleTriggers() {
     // handle onTriggerEnter
-    for (String collisionKey : activeCollisions) {
-      if (!previousCollisions.contains(collisionKey)) {
-        Entity[] pair = getEntitiesFromKey(collisionKey, entities);
-        if (pair != null) {
-          // Trigger each others script so entity1 gets entity2 in trigger and the other
-          // way around
-          triggerCollision(pair[0], pair[1], true);
-          triggerCollision(pair[1], pair[0], true);
-        }
+    for (CollisionPair pair : activeCollisions) {
+      if (!previousCollisions.contains(pair)) {
+        triggerCollision(pair.e1, pair.e2, true);
+        triggerCollision(pair.e2, pair.e1, true);
       }
     }
     // handle onTriggerLeave
-    for (String collisionKey : previousCollisions) {
-      if (!activeCollisions.contains(collisionKey)) {
-        Entity[] pair = getEntitiesFromKey(collisionKey, entities);
-        if (pair != null) {
-          triggerCollision(pair[0], pair[1], false);
-          triggerCollision(pair[1], pair[0], false);
-        }
+    for (CollisionPair pair : previousCollisions) {
+      if (!activeCollisions.contains(pair)) {
+        triggerCollision(pair.e1, pair.e2, false);
+        triggerCollision(pair.e2, pair.e1, false);
       }
     }
-
-  }
-
-  private Entity[] getEntitiesFromKey(String collisionKey, List<Entity> entities) {
-    String[] ids = collisionKey.split(":");
-    int id1 = Integer.parseInt(ids[0]);
-    int id2 = Integer.parseInt(ids[1]);
-
-    Entity e1 = null, e2 = null;
-    for (Entity e : entities) {
-      if (e.getId() == id1)
-        e1 = e;
-      if (e.getId() == id2)
-        e2 = e;
-      if (e1 != null && e2 != null)
-        return new Entity[] { e1, e2 };
-    }
-    return null;
   }
 
   private void triggerCollision(Entity owner, Entity trigger, boolean enter) {

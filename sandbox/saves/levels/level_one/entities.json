@@ -76,7 +76,7 @@
           "height": 100,
           "offsetX": -50,
           "offsetY": 0,
-          "isTrigger": false
+          "isTrigger": true
         }
       },
       {
