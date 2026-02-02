@@ -160,6 +160,20 @@ public class GDXRender implements IRenderContext, Disposable {
   }
 
   @Override
+  public void drawCircle(float x, float y, float radius, float r, float g, float b, float a) {
+    shapeRenderer.set(ShapeType.Line);
+    shapeRenderer.setColor(r, g, b, a);
+    shapeRenderer.circle(x, y, radius);
+  }
+
+  @Override
+  public void drawFilledCircle(float x, float y, float radius, float r, float g, float b, float a) {
+    shapeRenderer.set(ShapeType.Filled);
+    shapeRenderer.setColor(r, g, b, a);
+    shapeRenderer.circle(x, y, radius);
+  }
+
+  @Override
   public float getTextWidth(String text) {
     layout.setText(font, text);
     return layout.width;

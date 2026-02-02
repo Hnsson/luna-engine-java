@@ -3,10 +3,12 @@ package com.engine.rendering;
 import java.util.List;
 
 import com.engine.GameSystem;
+import com.engine.SystemContext;
 import com.engine.ecs.Entity;
 import com.engine.ecs.EntityManager;
 import com.engine.ecs.components.Transform;
 import com.engine.ecs.components.physics.BoxCollider;
+import com.engine.ecs.components.physics.CircleCollider;
 import com.engine.rendering.components.SpriteRenderer;
 import com.engine.rendering.contexts.IRenderContext;
 import com.engine.rendering.logic.SpriteRegistry;
@@ -119,6 +121,11 @@ public class RenderSystem implements GameSystem {
             boxCollider.width,
             boxCollider.height, 0, 1,
             0, 1);
+      }
+      if (entity.hasComponent(CircleCollider.class)) {
+        CircleCollider circleCollider = entity.getComponent(CircleCollider.class);
+        context.drawCircle(transform.position.x + circleCollider.offsetX, transform.position.y + circleCollider.offsetY,
+            circleCollider.radius, 0, 1, 0, 1);
       }
 
       // Draw a blue box on sprites

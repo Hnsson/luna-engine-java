@@ -76,6 +76,15 @@
           "height": 100,
           "offsetX": -50,
           "offsetY": 0,
+          "isTrigger": false
+        }
+      },
+      {
+        "type": "com.engine.ecs.components.physics.CircleCollider",
+        "data": {
+          "radius": 100,
+          "offsetX": 0,
+          "offsetY": 50,
           "isTrigger": true
         }
       },

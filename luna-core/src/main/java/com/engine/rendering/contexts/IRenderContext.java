@@ -40,6 +40,10 @@ public interface IRenderContext {
 
   void drawFilledRectangle(float x, float y, float width, float height, float r, float g, float b, float a);
 
+  void drawCircle(float x, float y, float radius, float r, float g, float b, float a);
+
+  void drawFilledCircle(float x, float y, float radius, float r, float g, float b, float a);
+
   float getTextWidth(String text);
 
   void drawText(String text, float x, float y, float r, float g, float b, float a);

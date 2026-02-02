@@ -1,9 +1,12 @@
 package com.engine.gdx.systems;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.badlogic.gdx.math.Circle;
+import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
 import com.engine.GameSystem;
 import com.engine.ecs.Component;
@@ -12,6 +15,7 @@ import com.engine.ecs.EntityManager;
 import com.engine.ecs.components.Transform;
 import com.engine.ecs.components.Collider;
 import com.engine.ecs.components.physics.BoxCollider;
+import com.engine.ecs.components.physics.CircleCollider;
 import com.engine.ecs.components.physics.RigidBody;
 import com.engine.gdx.CollisionPair;
 import com.engine.Script;
@@ -30,6 +34,8 @@ public class GDXCollisionSystem implements GameSystem {
   // don't know if necessary but felt like a cool way to test it
   private static final Rectangle rectA = new Rectangle();
   private static final Rectangle rectB = new Rectangle();
+  private static final Circle circleA = new Circle();
+  private static final Circle circleB = new Circle();
 
   public GDXCollisionSystem(EntityManager entityManager) {
     this.entityManager = entityManager;
@@ -49,21 +55,26 @@ public class GDXCollisionSystem implements GameSystem {
     for (int i = 0; i < entities.size(); i++) {
       // Start at i+1 so it doesnt check with itself
       Entity e1 = entities.get(i);
-      Collider c1 = e1.getComponent(Collider.class);
-      if (c1 == null)
+      List<Collider> e1Colliders = getColliders(e1);
+      if (e1Colliders.isEmpty())
         continue;
 
       for (int j = i + 1; j < entities.size(); j++) {
         Entity e2 = entities.get(j);
-        Collider c2 = e2.getComponent(Collider.class);
-        if (c2 == null)
+        List<Collider> e2Colliders = getColliders(e2);
+        if (e2Colliders.isEmpty())
           continue;
 
-        if (isColliding(e1, e2)) {
-          if (c1.isTrigger || c2.isTrigger) // like unity only when one is isTrigger
-            activeCollisions.add(new CollisionPair(e1, e2));
-          if (!c1.isTrigger && !c2.isTrigger)
-            resolve(e1, e2);
+        // Need to check for collision between all the entities colliders also
+        for (Collider c1 : e1Colliders) {
+          for (Collider c2 : e2Colliders) {
+            if (isColliding(e1, c1, e2, c2)) {
+              if (c1.isTrigger || c2.isTrigger)
+                activeCollisions.add(new CollisionPair(e1, e2));
+              if (!c1.isTrigger && !c2.isTrigger)
+                resolve(e1, e2);
+            }
+          }
         }
       }
     }
@@ -71,24 +82,54 @@ public class GDXCollisionSystem implements GameSystem {
     handleTriggers();
   }
 
-  private boolean isColliding(Transform t1, Collider c1, Transform t2, Collider c2) {
+  private boolean checkCollision(Transform t1, Collider c1, Transform t2, Collider c2) {
     if (c1 instanceof BoxCollider && c2 instanceof BoxCollider) {
       rectA.set(t1.position.x + c1.offsetX, t1.position.y + c1.offsetY, c1.width, c1.height);
       rectB.set(t2.position.x + c2.offsetX, t2.position.y + c2.offsetY, c2.width, c2.height);
       return rectA.overlaps(rectB);
     }
 
+    if (c1 instanceof CircleCollider && c2 instanceof BoxCollider) {
+      CircleCollider circleC1 = (CircleCollider) c1;
+      circleA.set(t1.position.x + circleC1.offsetX, t1.position.y + circleC1.offsetY, circleC1.radius);
+      rectB.set(t2.position.x + c2.offsetX, t2.position.y + c2.offsetY, c2.width, c2.height);
+      return Intersector.overlaps(circleA, rectB);
+    }
+
+    if (c1 instanceof BoxCollider && c2 instanceof CircleCollider) {
+      CircleCollider circleC2 = (CircleCollider) c2;
+      rectA.set(t1.position.x + c1.offsetX, t1.position.y + c1.offsetY, c1.width, c1.height);
+      circleB.set(t2.position.x + circleC2.offsetX, t2.position.y + circleC2.offsetY, circleC2.radius);
+      return Intersector.overlaps(circleB, rectA);
+    }
+
+    if (c1 instanceof CircleCollider && c2 instanceof CircleCollider) {
+      CircleCollider circleC1 = (CircleCollider) c1;
+      CircleCollider circleC2 = (CircleCollider) c2;
+      circleA.set(t1.position.x + circleC1.offsetX, t1.position.y + circleC1.offsetY, circleC1.radius);
+      circleB.set(t2.position.x + circleC2.offsetX, t2.position.y + circleC2.offsetY, circleC2.radius);
+      return circleA.overlaps(circleB);
+    }
+
     return false;
   }
 
-  private boolean isColliding(Entity e1, Entity e2) {
+  private boolean isColliding(Entity e1, Collider c1, Entity e2, Collider c2) {
     Transform t1 = e1.getComponent(Transform.class);
-    Collider c1 = e1.getComponent(Collider.class);
-
     Transform t2 = e2.getComponent(Transform.class);
-    Collider c2 = e2.getComponent(Collider.class);
 
-    return isColliding(t1, c1, t2, c2);
+    return checkCollision(t1, c1, t2, c2);
+  }
+
+  private List<Collider> getColliders(Entity e) {
+    List<Collider> colliders = new ArrayList<>();
+    for (Component cmp : e.getComponents()) {
+      if (cmp instanceof Collider) {
+        Collider colliderCmp = (Collider) cmp;
+        colliders.add(colliderCmp);
+      }
+    }
+    return colliders;
   }
 
   private void handleTriggers() {

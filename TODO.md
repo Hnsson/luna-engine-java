@@ -4,9 +4,6 @@
 - [ ] Update and add tests, been a while. (AWARE)
 - [ ] Implement a logger that neatly logs both terminal and file based on what you want.
 - [ ] [DEPENDENT ABOVE] Use the logger, there exists many places that doesn't have great error handling.
-- [ ] Make it easy to start dialogue with entities, like implement a proximity sensor between colliders like how Unity has Collider.OnTriggerEnter(Collider). Or loop
-      through entities and check distance.
-- [ ] Implement the BoxCollider with the collision logic and then Implement a CircleCollider.
 - [ ] When implementing level switching, remember to update the GDXAssetManager dispose(), read comment above it for more context.
 - [ ] Probably need a camera interface because the cameras are different in each framework? If I don't just wanna have it like now where the framework
       such as handling player states such as DuckingState, IdleState, AttackState. So the main game has a StateManager object handling the Game screens
@@ -17,6 +14,9 @@
       maybe want to trade item for item (check worth, the initiator should always either make even or lose i.e., if you want to trade 100 currency sword
       for NPC 10 currency sword it should work, but not the other way around because NPC should never make a losing trade), then maybe they want to trade
       item for gold (check value of item <= gold amount).
+- [X] Implement the BoxCollider with the collision logic and then Implement a CircleCollider.
+- [X] Make it easy to start dialogue with entities, like implement a proximity sensor between colliders like how Unity has Collider.OnTriggerEnter(Collider). Or loop
+      through entities and check distance.
 - [X] Extend collision system to implement how unity have a onTriggerEnter and onTriggerLeave that gets called once when entering and leaving other colliders
 - [X] Add a RigidBody component that I can attach to entities so physics applies to them. It should also include data such as mass, (drag?), maybe now that
       I think of it, velocity should maybe be here instead of in the transform like I have it now. How much gravity, gravity toggle.
