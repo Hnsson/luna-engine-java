@@ -14,6 +14,10 @@
       maybe want to trade item for item (check worth, the initiator should always either make even or lose i.e., if you want to trade 100 currency sword
       for NPC 10 currency sword it should work, but not the other way around because NPC should never make a losing trade), then maybe they want to trade
       item for gold (check value of item <= gold amount).
+- [ ] [WIP] Add a level loader, so instead of loading in just entities per level, have a certain levels json that contains the whole tilemap aswell as the default stations for all entities
+      so you load in that per level. So this includes adding a level loader that gets coordinates for sprites and what sprites aswell as coordinates for colliders (map corners).
+      Then when you save and load like how it is now, it will still as it does now save a new state of the entiites from the level_one loaded entities but with newer data,
+      so when you load a new level or load game it will try to load there first because that's the newest.
 - [X] Implement the BoxCollider with the collision logic and then Implement a CircleCollider.
 - [X] Make it easy to start dialogue with entities, like implement a proximity sensor between colliders like how Unity has Collider.OnTriggerEnter(Collider). Or loop
       through entities and check distance.
