@@ -3,12 +3,14 @@ package com.engine.rendering;
 import java.util.List;
 
 import com.engine.GameSystem;
-import com.engine.SystemContext;
 import com.engine.ecs.Entity;
 import com.engine.ecs.EntityManager;
 import com.engine.ecs.components.Transform;
 import com.engine.ecs.components.physics.BoxCollider;
 import com.engine.ecs.components.physics.CircleCollider;
+import com.engine.level.map.LevelMap;
+import com.engine.level.map.LevelMap.MapLayer;
+import com.engine.level.map.LevelMap.MapTile;
 import com.engine.rendering.components.SpriteRenderer;
 import com.engine.rendering.contexts.IRenderContext;
 import com.engine.rendering.logic.SpriteRegistry;
@@ -17,24 +19,26 @@ import com.engine.rendering.models.SpriteDefinition;
 public class RenderSystem implements GameSystem {
   private final IRenderContext context;
   private EntityManager entityManager;
+  private LevelMap levelMap;
   private boolean debugMode = false;
 
-  public RenderSystem(IRenderContext context, EntityManager entityManager) {
-    this.context = context; // Get the framework-specific implementation of the interface (libgdx, opengl,
-                            // ...)
-    this.entityManager = entityManager;
+  public RenderSystem(IRenderContext context, EntityManager entityManager, LevelMap levelMap) {
+    this(context, entityManager, levelMap, false);
   }
 
-  public RenderSystem(IRenderContext context, EntityManager entityManager, boolean debugMode) {
+  public RenderSystem(IRenderContext context, EntityManager entityManager, LevelMap levelMap, boolean debugMode) {
     this.context = context;
     this.entityManager = entityManager;
+    this.levelMap = levelMap;
     this.debugMode = debugMode;
   }
 
   @Override
   public void render() {
-    context.clearScreen(0.1f, 0.1f, 0.1f);
+    // took rgb from water image background
+    context.clearScreen(37 / 255f, 150 / 255f, 190 / 255f);
 
+    renderMap();
     renderEntities();
 
     if (debugMode)
@@ -45,6 +49,28 @@ public class RenderSystem implements GameSystem {
 
   public void toggleDebugMode() {
     this.debugMode = !debugMode;
+  }
+
+  public void renderMap() {
+    context.beginFrame();
+    List<MapLayer> layers = levelMap.layers;
+
+    layers.sort((l1, l2) -> {
+      int layer1 = RenderLayerRegistry.getOrder(l1.renderLayer);
+      int layer2 = RenderLayerRegistry.getOrder(l2.renderLayer);
+      return Integer.compare(layer1, layer2);
+    });
+
+    for (MapLayer layer : layers) {
+      int tileSize = layer.tileSize;
+      SpriteDefinition def = SpriteRegistry.get(layer.spriteId);
+      if (def != null) {
+        for (MapTile tile : layer.tiles) {
+          context.drawSprite(def, tile.textureIndex, tile.x, tile.y, tileSize, tileSize, false, false);
+        }
+      }
+    }
+    context.endFrame();
   }
 
   public void renderEntities() {

@@ -9,12 +9,11 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.engine.GameSystem;
 import com.engine.dialogue.DialogueManager;
-import com.engine.ecs.ECSSerializer;
 import com.engine.ecs.Entity;
-import com.engine.ecs.EntityManager;
 import com.engine.fsm.states.WindowLayer;
 import com.engine.gdx.GDXScriptContext;
 import com.engine.gdx.io.GDXFileHandler;
+import com.engine.gdx.level.GDXWorldLoader;
 import com.engine.gdx.rendering.GDXAssetManager;
 import com.engine.gdx.rendering.GDXRender;
 import com.engine.gdx.systems.GDXCollisionSystem;
@@ -23,6 +22,7 @@ import com.engine.gdx.systems.GDXInputSystem;
 import com.engine.gdx.systems.GDXMovementSystem;
 import com.engine.gdx.systems.GDXScriptSystem;
 import com.engine.inventory.logic.ItemRegistry;
+import com.engine.level.LevelManager;
 import com.engine.rendering.RenderSystem;
 
 public class GDXGameLayer extends WindowLayer {
@@ -46,10 +46,9 @@ public class GDXGameLayer extends WindowLayer {
 
   private GDXScriptContext scriptContext;
 
-  private EntityManager entityManager;
-
   private GDXFileHandler fileHandler;
-  private ECSSerializer serializer;
+  private GDXWorldLoader worldLoader;
+  private LevelManager levelManager;
 
   public GDXGameLayer(int width, int height, String levelName, GDXAssetManager assetManager) {
     super(width, height); // pass it up
@@ -64,7 +63,10 @@ public class GDXGameLayer extends WindowLayer {
 
   @Override
   public void enter() {
-    entityManager = new EntityManager();
+    fileHandler = new GDXFileHandler();
+    worldLoader = new GDXWorldLoader();
+    levelManager = new LevelManager(levelName, fileHandler, worldLoader);
+    this.player = levelManager.loadLevel(levelName);
     systems = new ArrayList<>();
 
     camera = new OrthographicCamera();
@@ -77,14 +79,13 @@ public class GDXGameLayer extends WindowLayer {
     ItemRegistry.loadAllItems("/items/items.json");
 
     // Game systems:
-    // Have input system still stored normally because I want to access keybindings
-    inputSystem = new GDXInputSystem(entityManager);
-    renderSystem = new RenderSystem(renderer, entityManager, false);
-    movementSystem = new GDXMovementSystem(entityManager);
+    inputSystem = new GDXInputSystem(levelManager.getEntityManager());
+    renderSystem = new RenderSystem(renderer, levelManager.getEntityManager(), levelManager.getLevelMap());
+    movementSystem = new GDXMovementSystem(levelManager.getEntityManager());
     dialogueSystem = new GDXDialogueSystem(levelName, new DialogueManager(), renderer, inputSystem);
-    collisionSystem = new GDXCollisionSystem(entityManager);
+    collisionSystem = new GDXCollisionSystem(levelManager.getEntityManager());
 
-    scriptContext = new GDXScriptContext(entityManager, inputSystem, dialogueSystem, renderer);
+    scriptContext = new GDXScriptContext(levelManager.getEntityManager(), inputSystem, dialogueSystem, renderer);
     scriptSystem = new GDXScriptSystem(scriptContext);
 
     systems.add(inputSystem);
@@ -93,14 +94,6 @@ public class GDXGameLayer extends WindowLayer {
     systems.add(dialogueSystem);
     systems.add(collisionSystem);
     systems.add(scriptSystem);
-
-    fileHandler = new GDXFileHandler();
-    serializer = new ECSSerializer();
-    loadGame(levelName);
-    // REMOVE THIS LATER WHEN IMPLEMENTING SMART WAY TO START DIALOGUE,
-    // THIS JUST TEST WORK FOR LEVEL ONE!!!!
-    // dialogueSystem.startDialogue(entityManager.getEntity(0),
-    // entityManager.getEntity(1));
   }
 
   @Override
@@ -150,31 +143,14 @@ public class GDXGameLayer extends WindowLayer {
       renderSystem.toggleDebugMode();
     }
     if (Gdx.input.isKeyJustPressed(inputSystem.getKeybind(GDXInputSystem.Mapping.SAVE))) {
-      saveGame();
+      levelManager.saveGame(levelName, player);
     }
     if (Gdx.input.isKeyJustPressed(inputSystem.getKeybind(GDXInputSystem.Mapping.LOAD))) {
-      loadGame(levelName);
+      this.player = levelManager.loadGame(levelName);
     }
 
     for (GameSystem system : systems) {
       system.eventHandler();
     }
-  }
-
-  private void saveGame() {
-    // In the future a state will have a state name (Level name)
-    // That will append that to the file so I can easily load and save
-    // levels based on the state name they got.
-    // for example: "saves/" + this.stateId + ".json"
-    entityManager.saveEntities("saves/levels/" + levelName + "/entities.json", fileHandler, serializer, this.player);
-    // Save the player state
-    entityManager.saveEntity("saves/player.json", this.player, fileHandler, serializer);
-    System.out.println("Saved game");
-  }
-
-  private void loadGame(String levelName) {
-    entityManager.loadEntities("saves/levels/" + levelName + "/entities.json", fileHandler, serializer, true);
-    this.player = entityManager.loadEntity("saves/player.json", fileHandler, serializer, false);
-    System.out.println("Game loaded");
   }
 }

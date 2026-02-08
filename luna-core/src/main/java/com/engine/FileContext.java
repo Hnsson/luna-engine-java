@@ -10,4 +10,6 @@ public interface FileContext {
   String readFile(String path);
 
   void writeFile(String path, String content);
+
+  boolean exists(String path);
 }

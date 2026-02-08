@@ -1,14 +1,14 @@
 {
   "name": "Tav",
+  "id": 2,
   "maxComponents": 32,
-  "layer": "PLAYER",
   "components": [
     {
       "type": "com.engine.ecs.components.Transform",
       "data": {
         "position": {
-          "x": 201.95203,
-          "y": 374.245
+          "x": 200,
+          "y": 400
         },
         "velocity": {
           "x": 0.0,
@@ -85,5 +85,6 @@
         "currentFrameIndex": 0
       }
     }
-  ]
+  ],
+  "layer": "PLAYER"
 }

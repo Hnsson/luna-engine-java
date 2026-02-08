@@ -1,5 +1,6 @@
 package com.engine.ecs;
 
+import com.engine.level.LevelData;
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
@@ -39,6 +40,21 @@ public class ECSSerializer {
     this.mainGson = builder.create();
   }
 
+  public LevelData loadLevel(String json) {
+    if (json == null || json.isEmpty())
+      return null;
+
+    LevelData level = mainGson.fromJson(json, LevelData.class);
+
+    if (level != null && level.entities != null) {
+      for (Entity entity : level.entities) {
+        entity.init();
+      }
+      return level;
+    }
+    return null;
+  }
+
   /*
    * Saves a singular entity, like if player need a separate file
    */
@@ -46,20 +62,6 @@ public class ECSSerializer {
     if (entity == null)
       return null;
     return mainGson.toJson(entity);
-  }
-
-  /*
-   * Load a singular entity
-   */
-  public Entity loadEntity(String json) {
-    // Now that we removed (added transient to entity component) we need to reapply
-    // it's owner to all components (is there a better way?)
-    Entity loadedEntity = mainGson.fromJson(json, Entity.class);
-
-    if (loadedEntity.getComponents() != null) {
-      loadedEntity.init();
-    }
-    return loadedEntity;
   }
 
   /*
@@ -73,6 +75,22 @@ public class ECSSerializer {
     Type listType = new TypeToken<List<Entity>>() {
     }.getType();
     return mainGson.toJson(entities, listType);
+  }
+
+  /*
+   * Load a singular entity
+   */
+  public Entity loadEntity(String json) {
+    if (json == null || json.isEmpty())
+      return null;
+    // Now that we removed (added transient to entity component) we need to reapply
+    // it's owner to all components (is there a better way?)
+    Entity loadedEntity = mainGson.fromJson(json, Entity.class);
+
+    if (loadedEntity.getComponents() != null) {
+      loadedEntity.init();
+    }
+    return loadedEntity;
   }
 
   /*

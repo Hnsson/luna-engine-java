@@ -13,4 +13,9 @@ public class GDXFileHandler implements FileContext {
   public void writeFile(String path, String content) {
     Gdx.files.local(path).writeString(content, false);
   }
+
+  @Override
+  public boolean exists(String path) {
+    return Gdx.files.local(path).exists();
+  }
 }
