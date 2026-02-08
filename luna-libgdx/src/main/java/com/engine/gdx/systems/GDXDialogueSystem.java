@@ -50,16 +50,20 @@ public class GDXDialogueSystem implements GameSystem {
       return;
 
     if (Gdx.input.isKeyJustPressed(input.getKeybind(GDXInputSystem.Mapping.UP))) {
-      currentSelectionIndex--;
-      if (currentSelectionIndex < 0) {
-        currentSelectionIndex = manager.getValidOptions().size() - 1;
+      if (textFinished) {
+        currentSelectionIndex--;
+        if (currentSelectionIndex < 0) {
+          currentSelectionIndex = manager.getValidOptions().size() - 1;
+        }
       }
     }
 
     if (Gdx.input.isKeyJustPressed(input.getKeybind(GDXInputSystem.Mapping.DOWN))) {
-      currentSelectionIndex++;
-      if (currentSelectionIndex >= manager.getValidOptions().size()) {
-        currentSelectionIndex = 0;
+      if (textFinished) {
+        currentSelectionIndex++;
+        if (currentSelectionIndex >= manager.getValidOptions().size()) {
+          currentSelectionIndex = 0;
+        }
       }
     }
 
@@ -69,6 +73,12 @@ public class GDXDialogueSystem implements GameSystem {
         currentSelectionIndex = 0;
         stringCompleteness = 0;
         textFinished = false;
+      }
+    }
+
+    if (Gdx.input.isKeyJustPressed(input.getKeybind(GDXInputSystem.Mapping.SPACE))) {
+      if (!textFinished) {
+        stringCompleteness = manager.getCurrentNodeText().length();
       }
     }
   }

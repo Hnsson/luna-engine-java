@@ -106,8 +106,6 @@ public class DialogueManager {
 
     this.activeNode = node;
     updateValidOptions();
-
-    printCurrentState();
   }
 
   private void updateValidOptions() {
