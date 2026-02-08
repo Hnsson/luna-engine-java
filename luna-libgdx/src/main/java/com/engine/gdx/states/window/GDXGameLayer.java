@@ -13,7 +13,6 @@ import com.engine.ecs.Entity;
 import com.engine.fsm.states.WindowLayer;
 import com.engine.gdx.GDXScriptContext;
 import com.engine.gdx.io.GDXFileHandler;
-import com.engine.gdx.level.GDXWorldLoader;
 import com.engine.gdx.rendering.GDXAssetManager;
 import com.engine.gdx.rendering.GDXRender;
 import com.engine.gdx.systems.GDXCollisionSystem;
@@ -47,7 +46,6 @@ public class GDXGameLayer extends WindowLayer {
   private GDXScriptContext scriptContext;
 
   private GDXFileHandler fileHandler;
-  private GDXWorldLoader worldLoader;
   private LevelManager levelManager;
 
   public GDXGameLayer(int width, int height, String levelName, GDXAssetManager assetManager) {
@@ -64,8 +62,7 @@ public class GDXGameLayer extends WindowLayer {
   @Override
   public void enter() {
     fileHandler = new GDXFileHandler();
-    worldLoader = new GDXWorldLoader();
-    levelManager = new LevelManager(levelName, fileHandler, worldLoader);
+    levelManager = new LevelManager(levelName, fileHandler);
     this.player = levelManager.loadLevel(levelName);
     systems = new ArrayList<>();
 

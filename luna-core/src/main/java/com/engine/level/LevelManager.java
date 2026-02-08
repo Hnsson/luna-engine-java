@@ -13,11 +13,11 @@ public class LevelManager {
   private LevelMap levelMap;
   private WorldLoader worldLoader;
 
-  public LevelManager(String levelName, FileContext fileHandler, WorldLoader worldLoader) {
+  public LevelManager(String levelName, FileContext fileHandler) {
     this.entityManager = new EntityManager();
     this.serializer = new ECSSerializer();
+    this.worldLoader = new WorldLoader();
     this.fileHandler = fileHandler;
-    this.worldLoader = worldLoader;
   }
 
   public EntityManager getEntityManager() {
