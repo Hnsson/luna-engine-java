@@ -57,6 +57,10 @@ public class Entity {
     return this.startDialogueNodeId;
   }
 
+  public void setLayer(Layers layer) {
+    this.layer = layer;
+  }
+
   public Layers getLayer() {
     return this.layer;
   }

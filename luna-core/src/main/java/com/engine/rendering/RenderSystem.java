@@ -114,14 +114,16 @@ public class RenderSystem implements GameSystem {
       }
 
       // Render the names above all transforms (also based on sprite)
-      String name = entity.getName();
-      if (name != null && !name.isEmpty()) {
-        float textWidth = context.getTextWidth(name);
+      if (entity.hasComponent(SpriteRenderer.class)) {
+        String name = entity.getName();
+        if (name != null && !name.isEmpty()) {
+          float textWidth = context.getTextWidth(name);
 
-        float centeredX = transform.position.x + xOffset - (textWidth / 2f);
-        float centeredY = transform.position.y + yOffset + height + 20;
+          float centeredX = transform.position.x + xOffset - (textWidth / 2f);
+          float centeredY = transform.position.y + yOffset + height + 20;
 
-        context.drawText(name, centeredX, centeredY, 1, 1, 1, 1);
+          context.drawText(name, centeredX, centeredY, 1, 1, 1, 1);
+        }
       }
     }
     context.endFrame();
