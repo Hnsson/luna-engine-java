@@ -5,16 +5,14 @@
 - [ ] Implement a logger that neatly logs both terminal and file based on what you want.
 - [ ] [DEPENDENT ABOVE] Use the logger, there exists many places that doesn't have great error handling.
 - [ ] When implementing level switching, remember to update the GDXAssetManager dispose(), read comment above it for more context.
-- [ ] Probably need a camera interface because the cameras are different in each framework? If I don't just wanna have it like now where the framework
-      such as handling player states such as DuckingState, IdleState, AttackState. So the main game has a StateManager object handling the Game screens
-      while the movement system has another StateManager object handling the player states.
-      Implement handles that at their own accord.
 - [ ] Implement a TradeManager in the inventory-system so that two inventories can perform a trade, this includes adding currency to a inventory that
       can be increased or decresed, then when two inventories want to trade they can trade gold (make sure both sides have enough), then one or the other
       maybe want to trade item for item (check worth, the initiator should always either make even or lose i.e., if you want to trade 100 currency sword
       for NPC 10 currency sword it should work, but not the other way around because NPC should never make a losing trade), then maybe they want to trade
       item for gold (check value of item <= gold amount).
-- [ ] [WIP] Add a level loader, so instead of loading in just entities per level, have a certain levels json that contains the whole tilemap aswell as the default stations for all entities
+- [X] Add a camera that acts like how you usually do it in Unity, have a entity with a camera attached and a system that uses it. It should follow an entity (player in begining),
+      but be able to switch entity smoothly and zoom smoothly for other systems to use as they fit (dialogue)
+- [X] [WIP] Add a level loader, so instead of loading in just entities per level, have a certain levels json that contains the whole tilemap aswell as the default stations for all entities
       so you load in that per level. So this includes adding a level loader that gets coordinates for sprites and what sprites aswell as coordinates for colliders (map corners).
       Then when you save and load like how it is now, it will still as it does now save a new state of the entiites from the level_one loaded entities but with newer data,
       so when you load a new level or load game it will try to load there first because that's the newest.

@@ -7,26 +7,32 @@ public class Camera extends Component {
   // Let camera system set this (transient)
   public transient Entity targetEntity;
 
-  public float followSpeed = 2f;
+  public float followSpeed;
+  public float zoomSpeed;
+
   public float zoom;
+  public float currentZoom;
   public boolean lockX, lockY;
   public float offsetX, offsetY;
 
   public Camera() {
-    this(5.0f, 1.0f);
+    this(5.0f, 1.0f, 3.0f);
   }
 
-  public Camera(float followSpeed, float zoom) {
-    this(followSpeed, zoom, false, false);
+  public Camera(float followSpeed, float zoom, float zoomSpeed) {
+    this(followSpeed, zoom, zoomSpeed, false, false);
   }
 
-  public Camera(float followSpeed, float zoom, boolean lockX, boolean lockY) {
-    this(followSpeed, zoom, lockX, lockY, 0f, 0f);
+  public Camera(float followSpeed, float zoom, float zoomSpeed, boolean lockX, boolean lockY) {
+    this(followSpeed, zoom, zoomSpeed, lockX, lockY, 0f, 0f);
   }
 
-  public Camera(float followSpeed, float zoom, boolean lockX, boolean lockY, float offsetX, float offsetY) {
+  public Camera(float followSpeed, float zoom, float zoomSpeed, boolean lockX, boolean lockY, float offsetX,
+      float offsetY) {
     this.followSpeed = followSpeed;
     this.zoom = zoom;
+    this.currentZoom = zoom;
+    this.zoomSpeed = zoomSpeed;
     this.lockX = lockX;
     this.lockY = lockY;
     this.offsetX = offsetX;

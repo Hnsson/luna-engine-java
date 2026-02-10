@@ -81,7 +81,6 @@ public class GDXDialogueSystem implements GameSystem {
     Camera camComp = camera.getComponent(Camera.class);
     camComp.targetEntity = initiator;
     camComp.zoom = originalZoom;
-
   }
 
   @Override

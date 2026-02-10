@@ -53,8 +53,18 @@ public class GDXCameraSystem implements GameSystem {
         camTransform.position.y += (destY - camTransform.position.y) * camComp.followSpeed * delta;
       }
     }
+
+    // Lerp zoom
+    float zoomDiff = camComp.zoom - camComp.currentZoom;
+    if (Math.abs(zoomDiff) > 0.001f) {
+      camComp.currentZoom += zoomDiff * camComp.zoomSpeed * delta;
+    } else {
+      // Snap to finish if very close
+      camComp.currentZoom = camComp.zoom;
+    }
+
     gdxCamera.position.set(camTransform.position.x, camTransform.position.y, 0);
-    gdxCamera.zoom = camComp.zoom;
+    gdxCamera.zoom = camComp.currentZoom;
     gdxCamera.update();
   }
 }
