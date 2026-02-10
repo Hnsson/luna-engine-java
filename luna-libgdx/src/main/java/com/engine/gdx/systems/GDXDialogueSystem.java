@@ -6,8 +6,11 @@ import com.badlogic.gdx.Gdx;
 import com.engine.GameSystem;
 import com.engine.dialogue.DialogueManager;
 import com.engine.ecs.Entity;
+import com.engine.ecs.EntityManager;
+import com.engine.ecs.components.Transform;
 import com.engine.dialogue.graph.DialogueOption;
 import com.engine.gdx.rendering.GDXRender;
+import com.engine.rendering.components.Camera;
 
 public class GDXDialogueSystem implements GameSystem {
   private String levelName;
@@ -15,9 +18,12 @@ public class GDXDialogueSystem implements GameSystem {
   private DialogueManager manager;
   private GDXRender renderer;
   private GDXInputSystem input;
+  private EntityManager entityManager;
 
   private Entity target;
   private Entity initiator;
+
+  private float originalZoom;
 
   private int currentSelectionIndex = 0;
 
@@ -25,11 +31,13 @@ public class GDXDialogueSystem implements GameSystem {
   private float textSpeed = 20;
   private boolean textFinished = false;
 
-  public GDXDialogueSystem(String levelName, DialogueManager manager, GDXRender renderer, GDXInputSystem input) {
+  public GDXDialogueSystem(String levelName, DialogueManager manager, GDXRender renderer, GDXInputSystem input,
+      EntityManager entityManager) {
     this.levelName = levelName;
     this.manager = manager;
     this.renderer = renderer;
     this.input = input;
+    this.entityManager = entityManager;
 
     manager.loadAllGraphs("/graphs/" + levelName);
   }
@@ -41,7 +49,39 @@ public class GDXDialogueSystem implements GameSystem {
   public void startDialogue(Entity target, Entity initiator) {
     this.initiator = initiator;
     this.target = target;
+
+    setCameraTarget(target);
     manager.startDialogue(target.getDialogueNodeId(), initiator);
+  }
+
+  public void setCameraTarget(Entity target) {
+    List<Entity> cameras = entityManager.getEntitiesWithAll(Camera.class, Transform.class);
+    if (cameras.isEmpty()) {
+      System.err.println("[CAMERASYSTEM::setTarget] No Camera Entity found in world!");
+      return;
+    }
+
+    Entity camera = cameras.get(0);
+
+    Camera camComp = camera.getComponent(Camera.class);
+    this.originalZoom = camComp.zoom;
+    camComp.targetEntity = target;
+    camComp.zoom = 0.65f;
+  }
+
+  public void resetCameraTarget() {
+    List<Entity> cameras = entityManager.getEntitiesWithAll(Camera.class, Transform.class);
+    if (cameras.isEmpty()) {
+      System.err.println("[CAMERASYSTEM::setTarget] No Camera Entity found in world!");
+      return;
+    }
+
+    Entity camera = cameras.get(0);
+
+    Camera camComp = camera.getComponent(Camera.class);
+    camComp.targetEntity = initiator;
+    camComp.zoom = originalZoom;
+
   }
 
   @Override
@@ -70,6 +110,10 @@ public class GDXDialogueSystem implements GameSystem {
     if (Gdx.input.isKeyJustPressed(input.getKeybind(GDXInputSystem.Mapping.ENTER))) {
       if (textFinished) {
         manager.chooseOption(currentSelectionIndex);
+        if (!manager.isActive()) {
+          resetCameraTarget();
+        }
+        // Reset text for next node
         currentSelectionIndex = 0;
         stringCompleteness = 0;
         textFinished = false;

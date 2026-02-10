@@ -323,6 +323,29 @@
   },
   "entities": [
     {
+      "name": "Main Camera",
+      "maxComponents": 32,
+      "layer": "UI",
+      "components": [
+        {
+          "type": "com.engine.rendering.components.Camera",
+          "data": {
+            "zoom": 1.0,
+            "followSpeed": 2.5
+          }
+        },
+        {
+          "type": "com.engine.ecs.components.Transform",
+          "data": {
+            "position": {
+              "x": 0,
+              "y": 0
+            }
+          }
+        }
+      ]
+    },
+    {
       "name": "[BLACKSMITH] Brokk Ironjaw",
       "startDialogueNodeId": "blacksmith_start",
       "maxComponents": 32,

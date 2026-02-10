@@ -15,6 +15,7 @@ import com.engine.gdx.GDXScriptContext;
 import com.engine.gdx.io.GDXFileHandler;
 import com.engine.gdx.rendering.GDXAssetManager;
 import com.engine.gdx.rendering.GDXRender;
+import com.engine.gdx.systems.GDXCameraSystem;
 import com.engine.gdx.systems.GDXCollisionSystem;
 import com.engine.gdx.systems.GDXDialogueSystem;
 import com.engine.gdx.systems.GDXInputSystem;
@@ -40,6 +41,7 @@ public class GDXGameLayer extends WindowLayer {
   private GDXMovementSystem movementSystem;
   private GDXDialogueSystem dialogueSystem;
   private GDXCollisionSystem collisionSystem;
+  private GDXCameraSystem cameraSystem;
   private GDXScriptSystem scriptSystem;
   private List<GameSystem> systems;
 
@@ -79,8 +81,11 @@ public class GDXGameLayer extends WindowLayer {
     inputSystem = new GDXInputSystem(levelManager.getEntityManager());
     renderSystem = new RenderSystem(renderer, levelManager.getEntityManager(), levelManager.getLevelMap());
     movementSystem = new GDXMovementSystem(levelManager.getEntityManager());
-    dialogueSystem = new GDXDialogueSystem(levelName, new DialogueManager(), renderer, inputSystem);
+    dialogueSystem = new GDXDialogueSystem(levelName, new DialogueManager(), renderer, inputSystem,
+        levelManager.getEntityManager());
     collisionSystem = new GDXCollisionSystem(levelManager.getEntityManager());
+    cameraSystem = new GDXCameraSystem(levelManager.getEntityManager(), camera);
+    cameraSystem.setTarget(this.player);
 
     scriptContext = new GDXScriptContext(levelManager.getEntityManager(), inputSystem, dialogueSystem, renderer);
     scriptSystem = new GDXScriptSystem(scriptContext);
@@ -90,6 +95,8 @@ public class GDXGameLayer extends WindowLayer {
     systems.add(movementSystem);
     systems.add(dialogueSystem);
     systems.add(collisionSystem);
+    systems.add(cameraSystem);
+
     systems.add(scriptSystem);
   }
 
@@ -121,6 +128,7 @@ public class GDXGameLayer extends WindowLayer {
     if (!isPaused) {
       if (dialogueSystem.isActive()) {
         dialogueSystem.update(delta);
+        cameraSystem.update(delta);
         // Add other systems that should also work during conversation
       } else {
         for (GameSystem system : systems) {
