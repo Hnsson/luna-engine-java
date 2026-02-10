@@ -50,8 +50,23 @@ public class GDXDialogueSystem implements GameSystem {
     this.initiator = initiator;
     this.target = target;
 
+    getCameraZoom();
+    // First set camera to the one talking
     setCameraTarget(target);
     manager.startDialogue(target.getDialogueNodeId(), initiator);
+  }
+
+  public void getCameraZoom() {
+    List<Entity> cameras = entityManager.getEntitiesWithAll(Camera.class, Transform.class);
+    if (cameras.isEmpty()) {
+      System.err.println("[CAMERASYSTEM::setTarget] No Camera Entity found in world!");
+      return;
+    }
+
+    Entity camera = cameras.get(0);
+
+    Camera camComp = camera.getComponent(Camera.class);
+    this.originalZoom = camComp.zoom;
   }
 
   public void setCameraTarget(Entity target) {
@@ -64,7 +79,6 @@ public class GDXDialogueSystem implements GameSystem {
     Entity camera = cameras.get(0);
 
     Camera camComp = camera.getComponent(Camera.class);
-    this.originalZoom = camComp.zoom;
     camComp.targetEntity = target;
     camComp.zoom = 0.65f;
   }
@@ -111,6 +125,8 @@ public class GDXDialogueSystem implements GameSystem {
         manager.chooseOption(currentSelectionIndex);
         if (!manager.isActive()) {
           resetCameraTarget();
+        } else {
+          setCameraTarget(target);
         }
         // Reset text for next node
         currentSelectionIndex = 0;
@@ -143,6 +159,12 @@ public class GDXDialogueSystem implements GameSystem {
     int charCountThisFrame = (int) stringCompleteness;
     if (charCountThisFrame > manager.getCurrentNodeText().length()) {
       charCountThisFrame = manager.getCurrentNodeText().length();
+
+      if (!textFinished) {
+        textFinished = true;
+        // When target is done talking, pan camera to initiator for answer
+        setCameraTarget(initiator);
+      }
       textFinished = true;
     }
     renderer.drawText(manager.getCurrentNodeText().substring(0, charCountThisFrame), 60, 160, 1, 1, 1, 1);
