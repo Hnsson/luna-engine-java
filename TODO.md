@@ -4,8 +4,8 @@
 - [ ] Update and add tests, been a while. (AWARE)
 - [ ] Implement a logger that neatly logs both terminal and file based on what you want.
 - [ ] [DEPENDENT ABOVE] Use the logger, there exists many places that doesn't have great error handling.
-- [ ] When implementing level switching, remember to update the GDXAssetManager dispose(), read comment above it for more context.
-- [ ] Implement a TradeManager in the inventory-system so that two inventories can perform a trade, this includes adding currency to a inventory that
+- [ ] When implementing level switching, remember to update the GDXAssetManager dispose(), read comment above it in the code for more context.
+- [X] Implement a TradeManager in the inventory-system so that two inventories can perform a trade, this includes adding currency to a inventory that
       can be increased or decresed, then when two inventories want to trade they can trade gold (make sure both sides have enough), then one or the other
       maybe want to trade item for item (check worth, the initiator should always either make even or lose i.e., if you want to trade 100 currency sword
       for NPC 10 currency sword it should work, but not the other way around because NPC should never make a losing trade), then maybe they want to trade

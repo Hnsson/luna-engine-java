@@ -89,4 +89,13 @@ public class ItemStack {
     return ItemRegistry.getDefinition(this.itemId).getPrice();
   }
 
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj)
+      return true;
+    if (obj == null || getClass() != obj.getClass())
+      return false;
+    ItemStack other = (ItemStack) obj;
+    return itemId == other.itemId && quantity == other.quantity;
+  }
 }

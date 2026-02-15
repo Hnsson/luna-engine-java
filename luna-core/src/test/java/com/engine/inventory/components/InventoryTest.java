@@ -91,4 +91,13 @@ class InventoryTest {
     boolean success = inventory.addItem(new ItemStack("stone", 1));
     assertFalse(success);
   }
+
+  @Test
+  void testHasItem() {
+    inventory.addItem(new ItemStack("sword", 1));
+
+    boolean hasItem = inventory.hasItem(new ItemStack("sword", 1));
+    assertTrue(hasItem);
+  }
+
 }

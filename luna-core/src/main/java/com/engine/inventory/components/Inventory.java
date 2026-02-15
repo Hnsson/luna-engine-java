@@ -10,8 +10,10 @@ import com.engine.inventory.models.ItemStack;
 public class Inventory extends Component {
   private List<ItemStack> inventory;
   private final int capacity;
+  private int currency;
 
   public Inventory() {
+    this.currency = 0;
     this.capacity = 24;
     this.inventory = new ArrayList<>(this.capacity);
 
@@ -95,6 +97,15 @@ public class Inventory extends Component {
     }
   }
 
+  public boolean hasItem(ItemStack item) {
+    for (ItemStack slot : inventory) {
+      if (slot.equals(item)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   public void deleteItem(int index) {
     if (index >= 0 && index < capacity) {
       inventory.set(index, null);
@@ -141,5 +152,24 @@ public class Inventory extends Component {
 
   public List<ItemStack> getInventory() {
     return this.inventory;
+  }
+
+  public int getCurrency() {
+    return this.currency;
+  }
+
+  public int removeCurrency(int value) {
+    int rest = 0;
+    if (currency - value < 0) {
+      currency = 0;
+      rest = Math.abs(currency - value);
+    } else {
+      this.currency -= value;
+    }
+    return rest;
+  }
+
+  public void addCurrency(int value) {
+    this.currency += value;
   }
 }
