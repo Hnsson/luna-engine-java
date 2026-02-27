@@ -85,6 +85,10 @@ public class GDXRender implements IRenderContext, Disposable {
   public void beginUIShapeFrame() {
     if (batch.isDrawing())
       batch.end();
+
+    Gdx.gl.glEnable(GL20.GL_BLEND);
+    Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+
     shapeRenderer.setProjectionMatrix(uiCamera.combined);
     shapeRenderer.setAutoShapeType(true);
     shapeRenderer.begin(ShapeType.Filled);
@@ -93,6 +97,7 @@ public class GDXRender implements IRenderContext, Disposable {
   @Override
   public void endUIShapeFrame() {
     shapeRenderer.end();
+    Gdx.gl.glDisable(GL20.GL_BLEND);
   }
 
   @Override

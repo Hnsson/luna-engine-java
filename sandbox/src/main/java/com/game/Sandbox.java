@@ -16,7 +16,7 @@ public class Sandbox extends ApplicationAdapter {
 
   @Override
   public void create() {
-    fsm = new StateMachine();
+    fsm = new StateMachine<>();
     assetManager = new GDXAssetManager();
     // load all common assets that will be consitent across all levels (so far
     // player, will probably be more in future)

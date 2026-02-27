@@ -48,7 +48,6 @@ gradlew.bat :sandbox:run
 - [ ] When implementing level switching, remember to update the GDXAssetManager dispose(), read comment above it in the code for more context.
 - [ ] Create a separate app / library that let me create levels more easily. It should import tilesheets and let me paint or edit levels and it will
       translate that into my needed JSON format.
-- [ ] #ISSUE: The transparency when rendering is not working, even when entering alpha of 0.5f, it does nothing.
 - [ ] Map editor: separate application that either creates or edits maps. Is able to paint tiles from tilemap and import and export the format
       that luna-engine uses for maps.
 - [ ] Animation system
@@ -63,6 +62,7 @@ gradlew.bat :sandbox:run
           maybe only accept trades that makes them go >60% profit or something like that.
 
 ### Done
+- [X] #ISSUE: The transparency when rendering is not working, even when entering alpha of 0.5f, it does nothing.
 - [X] Implement a TradeManager in the inventory-system so that two inventories can perform a trade, this includes adding currency to a inventory that
       can be increased or decresed, then when two inventories want to trade they can trade gold (make sure both sides have enough), then one or the other
       maybe want to trade item for item (check worth, the initiator should always either make even or lose i.e., if you want to trade 100 currency sword
