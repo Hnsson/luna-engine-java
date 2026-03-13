@@ -211,9 +211,9 @@ public class GDXCollisionSystem implements GameSystem {
         t2.position.x -= overlapX * t2Share;
       }
       if (!r1.immovable)
-        t1.velocity.x = 0;
+        r1.velocity.x = 0;
       if (!r2.immovable)
-        t2.velocity.x = 0;
+        r2.velocity.x = 0;
     } else {
       if (y1 < y2) {
         t1.position.y -= overlapY * t1Share;
@@ -224,9 +224,9 @@ public class GDXCollisionSystem implements GameSystem {
       }
 
       if (!r1.immovable)
-        t1.velocity.y = 0;
+        r1.velocity.y = 0;
       if (!r2.immovable)
-        t2.velocity.y = 0;
+        r2.velocity.y = 0;
     }
   }
 }

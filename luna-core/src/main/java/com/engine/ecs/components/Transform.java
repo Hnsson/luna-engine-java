@@ -5,7 +5,6 @@ import com.engine.math.Vector2f;
 
 public class Transform extends Component {
   public Vector2f position = new Vector2f();
-  public Vector2f velocity = new Vector2f();
 
   public Transform() {
     this(0, 0);

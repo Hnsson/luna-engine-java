@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 
 import com.engine.ecs.components.*;
+import com.engine.ecs.components.physics.RigidBody;
 
 class EntityTest {
   private Entity entity;
@@ -63,17 +64,17 @@ class EntityTest {
 
   @Test
   void testGetComponent() {
-    Transform t_1 = new Transform();
+    RigidBody t_1 = new RigidBody();
     // t_1.velocity.x = 10f
 
     entity.addComponent(t_1);
 
-    Transform t_2 = entity.getComponent(Transform.class);
+    RigidBody t_2 = entity.getComponent(RigidBody.class);
 
     assertNotNull(t_2);
 
     t_2.velocity.x = 11f;
-    assertEquals(11f, entity.getComponent(Transform.class).velocity.x);
+    assertEquals(11f, entity.getComponent(RigidBody.class).velocity.x);
   }
 
   @Test

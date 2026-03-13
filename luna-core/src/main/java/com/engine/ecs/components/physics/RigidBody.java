@@ -1,8 +1,11 @@
 package com.engine.ecs.components.physics;
 
 import com.engine.ecs.Component;
+import com.engine.math.Vector2f;
 
 public class RigidBody extends Component {
+  public Vector2f velocity = new Vector2f();
+
   public boolean useGravity;
   public float mass;
   public boolean immovable;

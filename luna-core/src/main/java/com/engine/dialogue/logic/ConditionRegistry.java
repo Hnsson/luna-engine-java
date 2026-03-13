@@ -3,7 +3,7 @@ package com.engine.dialogue.logic;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.engine.ecs.components.Transform;
+import com.engine.ecs.components.physics.RigidBody;
 
 public class ConditionRegistry {
   private static final Map<String, Condition> conditions = new HashMap<>();
@@ -22,7 +22,7 @@ public class ConditionRegistry {
       return false;
     });
     register("is_running", ctx -> {
-      return Math.abs(ctx.player.getComponent(Transform.class).velocity.x) > 0;
+      return Math.abs(ctx.player.getComponent(RigidBody.class).velocity.x) > 0;
     });
   }
 
