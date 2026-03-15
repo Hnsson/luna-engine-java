@@ -4,3 +4,4 @@ include 'luna-core'
 include 'luna-libgdx'
 
 include 'sandbox'
+include 'luna-map-builder'

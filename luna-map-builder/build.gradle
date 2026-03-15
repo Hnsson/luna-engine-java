@@ -1,0 +1,19 @@
+plugins {
+  id 'application'
+}
+
+ext {
+  gdxVersion = '1.14.0'
+}
+
+application {
+    mainClass = 'com.mapbuilder.DesktopLauncher'
+}
+
+dependencies {
+    implementation project(':luna-core')
+    implementation project(':luna-libgdx')
+
+    implementation "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
+    implementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+}
