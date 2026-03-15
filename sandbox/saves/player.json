@@ -59,7 +59,7 @@
       }
     },
     {
-      "type": "com.engine.ecs.components.logic.PlayerController",
+      "type": "com.engine.ecs.components.logic.CharacterController",
       "data": {
         "speed": 150.0,
         "moveDir": {
@@ -86,5 +86,6 @@
       }
     }
   ],
-  "layer": "PLAYER"
+  "layer": "PLAYER",
+  "tag": "PLAYER"
 }

@@ -41,7 +41,6 @@ gradlew.bat :sandbox:run
 ## TODO
 ### Planned
 - [ ] Add a UIComponent that contains a sprite, screen position, widht, height, and so on. So it will be rendered in the UIFrame on top of everything.
-- [ ] Update README.md, been a while.
 - [ ] Update and add tests, been a while. (AWARE)
 - [ ] Implement a logger that neatly logs both terminal and file based on what you want.
 - [ ] [DEPENDENT ABOVE] Use the logger, there exists many places that doesn't have great error handling.
@@ -52,7 +51,6 @@ gradlew.bat :sandbox:run
       that luna-engine uses for maps.
 - [ ] Animation system
 - [ ] Combat system
-- [ ] Create a new branch that should be the map editor
 - [ ] CPU behaviour systems:
     - [ ] CPU Orchestrator
     - [X] Dialogue system
@@ -63,6 +61,8 @@ gradlew.bat :sandbox:run
           maybe only accept trades that makes them go >60% profit or something like that.
 
 ### Done
+- [X] Create a new branch that should be the map editor
+- [X] Update README.md, been a while.
 - [X] [#ISSUE]: Move velocity to Rigidbody, it represents dynamics and physics more, rather than current transform which just represent state of position.
 - [X] #ISSUE: The transparency when rendering is not working, even when entering alpha of 0.5f, it does nothing.
 - [X] Implement a TradeManager in the inventory-system so that two inventories can perform a trade, this includes adding currency to a inventory that

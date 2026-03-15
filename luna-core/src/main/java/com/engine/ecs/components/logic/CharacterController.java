@@ -9,15 +9,15 @@ import com.engine.math.Vector2f;
  * So this logic module should not need to know about the movement system which should be implemented
  * per framework (LibGDX, OpenGL, ...), so this component remains unchanged
  */
-public class PlayerController extends Component {
+public class CharacterController extends Component {
   public float speed;
   public Vector2f moveDir = new Vector2f(0, 0);
 
-  public PlayerController() {
+  public CharacterController() {
     this(150f);
   }
 
-  public PlayerController(float speed) {
+  public CharacterController(float speed) {
     this.speed = speed;
   }
 }

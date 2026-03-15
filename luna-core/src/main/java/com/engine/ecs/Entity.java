@@ -5,6 +5,7 @@ import java.util.BitSet;
 import java.util.List;
 
 import com.engine.rendering.RenderLayerRegistry.Layers;
+import com.engine.ecs.EntityTag;
 
 public class Entity {
   private static int nextId = 0;
@@ -17,6 +18,7 @@ public class Entity {
   private List<Component> components = new ArrayList<>();
   private transient BitSet activeComponents;
   private Layers layer = Layers.DEFAULT;
+  private EntityTag tag = EntityTag.DEFAULT;
 
   public Entity() {
     this(null);
@@ -27,10 +29,14 @@ public class Entity {
   }
 
   public Entity(String name, String startDialogueNodeId) {
-    this(name, startDialogueNodeId, null);
+    this(name, startDialogueNodeId, Layers.DEFAULT);
   }
 
   public Entity(String name, String startDialogueNodeId, Layers layer) {
+    this(name, startDialogueNodeId, layer, EntityTag.DEFAULT);
+  }
+
+  public Entity(String name, String startDialogueNodeId, Layers layer, EntityTag tag) {
     this.id = nextId++;
 
     if (name == null) {
@@ -43,6 +49,7 @@ public class Entity {
     this.activeComponents = new BitSet(this.maxComponents);
     this.startDialogueNodeId = startDialogueNodeId;
     this.layer = layer;
+    this.tag = tag;
   }
 
   public int getId() {
@@ -65,6 +72,14 @@ public class Entity {
     return this.layer;
   }
 
+  public void setTag(EntityTag tag) {
+    this.tag = tag;
+  }
+
+  public EntityTag getTag() {
+    return this.tag;
+  }
+
   public static void clear() {
     nextId = 0;
   }
@@ -84,8 +99,6 @@ public class Entity {
     component.entity = this;
     this.components.add(component);
     this.activeComponents.set(typeId);
-
-    System.out.println("Added component (" + component.getClass().getSimpleName() + ")");
 
     return component;
   }

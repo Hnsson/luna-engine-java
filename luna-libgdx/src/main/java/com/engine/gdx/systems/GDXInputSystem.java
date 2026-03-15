@@ -9,7 +9,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.engine.ecs.Entity;
 import com.engine.ecs.EntityManager;
-import com.engine.ecs.components.logic.PlayerController;
+import com.engine.ecs.EntityTag;
+import com.engine.ecs.components.logic.CharacterController;
 import com.engine.rendering.components.SpriteRenderer;
 
 public class GDXInputSystem implements GameSystem {
@@ -58,10 +59,10 @@ public class GDXInputSystem implements GameSystem {
 
   @Override
   public void eventHandler() {
-    List<Entity> entities = entityManager.getEntitiesWithAll(PlayerController.class, SpriteRenderer.class);
+    List<Entity> entities = entityManager.getEntitiesByTag(EntityTag.PLAYER);
 
     for (Entity entity : entities) {
-      PlayerController controller = entity.getComponent(PlayerController.class);
+      CharacterController controller = entity.getComponent(CharacterController.class);
       SpriteRenderer sprite = entity.getComponent(SpriteRenderer.class);
 
       controller.moveDir.set(0, 0);

@@ -26,6 +26,7 @@ public class EntityManager {
   private List<Entity> entitiesWithScripts = new ArrayList<>();
   private List<Entity> entities = new ArrayList<>();
   private Map<Class<? extends Component>, List<Entity>> componentEntityMap = new HashMap<>();
+  private Map<EntityTag, List<Entity>> tagEntityMap = new HashMap<>();
 
   public EntityManager() {
   }
@@ -85,6 +86,8 @@ public class EntityManager {
     entities.add(entity);
     boolean hasScript = false;
 
+    tagEntityMap.computeIfAbsent(entity.getTag(), k -> new ArrayList<>()).add(entity);
+
     for (Component component : entity.getComponents()) {
       // safety, creates list if empty
       componentEntityMap
@@ -104,6 +107,11 @@ public class EntityManager {
 
     entities.remove(entity);
     entitiesWithScripts.remove(entity);
+
+    List<Entity> tagList = tagEntityMap.get(entity.getTag());
+    if (tagList != null) {
+      tagList.remove(entity);
+    }
 
     for (Component component : entity.getComponents()) {
       Class<? extends Component> type = component.getClass();
@@ -128,7 +136,7 @@ public class EntityManager {
   }
 
   public List<Entity> getEntitiesWith(Class<? extends Component> componentClass) {
-    return componentEntityMap.get(componentClass);
+    return componentEntityMap.getOrDefault(componentClass, new ArrayList<>());
   }
 
   // Implemented using a set so that it is OR. Like if entity got <Component A> or
@@ -163,8 +171,28 @@ public class EntityManager {
     return new ArrayList<>(result);
   }
 
+  public List<Entity> getEntitiesByTag(EntityTag targetTag) {
+    return tagEntityMap.getOrDefault(targetTag, new ArrayList<>());
+  }
+
+  public List<Entity> getEntitiesByTag(EntityTag... targetTags) {
+    if (targetTags.length == 0) {
+      return new ArrayList<>();
+    }
+    List<Entity> result = new ArrayList<>();
+
+    // Because a entity can only have one tag we can get just all for each tag
+    for (EntityTag tag : targetTags) {
+      result.addAll(tagEntityMap.getOrDefault(tag, new ArrayList<>()));
+    }
+
+    return result;
+  }
+
   public void clear() {
     entities.clear();
     componentEntityMap.clear();
+    tagEntityMap.clear();
+    entitiesWithScripts.clear();
   }
 }
