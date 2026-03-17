@@ -81,8 +81,6 @@ public class GDXInputSystem implements GameSystem {
       if (Gdx.input.isKeyPressed(inputMapping.get(Mapping.DOWN))) {
         controller.moveDir.y = -1;
       }
-
-      controller.moveDir.normalize();
     }
   }
 }

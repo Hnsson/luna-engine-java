@@ -8,7 +8,7 @@ import com.badlogic.gdx.Gdx;
 import com.engine.Script;
 import com.engine.SystemContext;
 
-public class DialogueTriggerScript extends Script {
+public class GDXDialogueTriggerScript extends Script {
   private Entity currentTarget = null;
 
   public void update(float delta, SystemContext context) {

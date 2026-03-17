@@ -17,6 +17,9 @@ public class Transform extends Component {
 
   @Override
   public String toString() {
-    return "(" + this.position.x + ", " + this.position.y + ")";
+    // wanted to round to 2 decimals, was cluttering the screen before
+    float roundedX = Math.round(this.position.x * 100.0f) / 100.0f;
+    float roundedY = Math.round(this.position.y * 100.0f) / 100.0f;
+    return "(" + roundedX + ", " + roundedY + ")";
   }
 }

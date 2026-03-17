@@ -167,6 +167,18 @@ public class RenderSystem implements GameSystem {
     }
 
     context.endDebugFrame();
+    // Draw position text over transform
+    context.beginFrame();
+    entities = entityManager.getEntitiesWith(Transform.class);
+
+    for (Entity entity : entities) {
+      if (!entity.hasComponent(Transform.class))
+        continue;
+      Transform transform = entity.getComponent(Transform.class);
+
+      context.drawText(transform.toString(), transform.position.x, transform.position.y, 0, 0, 0, 1);
+    }
+    context.endFrame();
   }
 
   public void renderUI() {

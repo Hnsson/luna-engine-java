@@ -393,6 +393,24 @@
             "xOffset": 0.0,
             "yOffset": -48.0
           }
+        },
+        {
+          "type": "com.engine.ecs.components.logic.CharacterController",
+          "data": {
+            "speed": 100.0,
+            "moveDir": {
+              "x": 0.0,
+              "y": 0.0
+            }
+          }
+        },
+        {
+          "type": "com.engine.gdx.scripts.cpu.GDXNavigationScript",
+          "data": {
+            "mode": "FOLLOW_ENTITY",
+            "targetEntityName": "Tav",
+            "minDistance": 150.0
+          }
         }
       ]
     },
@@ -452,6 +470,26 @@
             "flipY": false,
             "xOffset": 0.0,
             "yOffset": -120.0
+          }
+        },
+        {
+          "type": "com.engine.gdx.scripts.cpu.GDXNavigationScript",
+          "data": {
+            "mode": "PATROL_CIRCUIT",
+            "waypoints": [
+              {
+                "x": 500.0,
+                "y": 400.0
+              },
+              {
+                "x": 600.0,
+                "y": 300.0
+              },
+              {
+                "x": 500.0,
+                "y": 180.0
+              }
+            ]
           }
         }
       ]
