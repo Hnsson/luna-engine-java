@@ -13,6 +13,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.SplitPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.ui.SplitPane.SplitPaneStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane.ScrollPaneStyle;
@@ -94,6 +96,8 @@ public class GDXMapEditorLayer extends WindowLayer {
   @Override
   public void update(float delta) {
     stage.act(delta);
+
+    model.beautyPrint();
   }
 
   @Override
@@ -125,7 +129,7 @@ public class GDXMapEditorLayer extends WindowLayer {
 
     skin.add("default-horizontal", splitStyle);
     skin.add("default-vertical", splitStyle);
-    skin.add("panel-palette", baseDrawable.tint(new Color(0.14f, 0.15f, 0.18f, 1f)));
+    skin.add("panel-palette", baseDrawable.tint(new Color(0.14f, 0.15f, 0.18f, 1f)), Drawable.class);
 
     // ScrollPane
     ScrollPane.ScrollPaneStyle scrollStyle = new ScrollPane.ScrollPaneStyle();
@@ -151,6 +155,23 @@ public class GDXMapEditorLayer extends WindowLayer {
 
     skin.add("default", scrollStyle);
     skin.add("tile-selected-border", selectionBorder, Drawable.class);
+
+    // Dialog Window (not fs)
+    TextField.TextFieldStyle fieldStyle = new TextField.TextFieldStyle();
+    fieldStyle.font = font;
+    fieldStyle.fontColor = Color.WHITE;
+    fieldStyle.cursor = baseDrawable.tint(Color.WHITE);
+    fieldStyle.selection = baseDrawable.tint(new Color(0.42f, 0.73f, 0.92f, 0.5f));
+    fieldStyle.background = baseDrawable.tint(new Color(0.2f, 0.22f, 0.26f, 1f));
+
+    skin.add("default", fieldStyle);
+
+    Window.WindowStyle dialogStyle = new Window.WindowStyle();
+    dialogStyle.background = skin.getDrawable("panel-palette");
+    dialogStyle.titleFont = font;
+    dialogStyle.titleFontColor = Color.WHITE;
+
+    skin.add("default", dialogStyle);
 
     // Label
     Label.LabelStyle labelStyle = new Label.LabelStyle(font, Color.WHITE);

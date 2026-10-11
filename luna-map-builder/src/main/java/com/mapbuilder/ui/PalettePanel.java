@@ -1,17 +1,22 @@
 package com.mapbuilder.ui;
 
+import java.util.function.BiConsumer;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.ButtonGroup;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldFilter;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
@@ -187,15 +192,69 @@ public class PalettePanel extends Table implements EditorModelListener {
     }
 
     Texture tilesetTexture = new Texture(handle);
-    // TODO: Ask user to enter width and height before this
-    int tileWidth = 32;
-    int tileHeight = 32;
 
-    TextureRegion[][] splitTiles = TextureRegion.split(tilesetTexture, tileWidth, tileHeight);
-    model.setTileset(tilesetTexture, splitTiles, tileWidth, tileHeight);
+    promptTileSize(32, 32, (tileWidth, tileHeight) -> {
+      TextureRegion[][] splitTiles = TextureRegion.split(tilesetTexture, tileWidth, tileHeight);
+      model.setTileset(tilesetTexture, splitTiles, tileWidth, tileHeight);
+    });
   }
 
   private void refreshTileset() {
 
+  }
+
+  private void promptTileSize(int defaultWidth, int defaultHeight, BiConsumer<Integer, Integer> onConfirm) {
+    Dialog dialog = new Dialog("Tile Size", skin) {
+      @Override
+      protected void result(Object object) {
+        if (Boolean.TRUE.equals(object)) {
+          Table content = getContentTable();
+          TextField wField = content.findActor("widthField");
+          TextField hField = content.findActor("heightField");
+
+          int width = parseIntSafe(wField.getText(), defaultWidth);
+          int height = parseIntSafe(hField.getText(), defaultHeight);
+
+          onConfirm.accept(width, height);
+        }
+      }
+    };
+
+    TextFieldFilter digitsOnly = new TextFieldFilter.DigitsOnlyFilter();
+
+    TextField widthField = new TextField(String.valueOf(defaultWidth), skin);
+    widthField.setName("widthField");
+    widthField.setTextFieldFilter(digitsOnly);
+
+    TextField heightField = new TextField(String.valueOf(defaultHeight), skin);
+    heightField.setName("heightField");
+    heightField.setTextFieldFilter(digitsOnly);
+
+    Table content = dialog.getContentTable();
+    content.pad(15f);
+
+    content.add(new Label("Tile Width (px):", skin)).left().padRight(10f);
+    content.add(widthField).width(70f).height(30f).row();
+
+    content.add(new Label("Tile Height (px):", skin)).left().padRight(10f).padTop(10f);
+    content.add(heightField).width(70f).height(30f).padTop(10f).row();
+
+    Table buttonTable = dialog.getButtonTable();
+    buttonTable.padBottom(15f).padTop(10f);
+    buttonTable.defaults().minWidth(80f).height(34f).padLeft(10f).padRight(10f);
+
+    dialog.button("Cancel", false);
+    dialog.button("OK", true);
+
+    dialog.show(getStage());
+  }
+
+  private int parseIntSafe(String text, int fallback) {
+    try {
+      int val = Integer.parseInt(text.trim());
+      return val > 0 ? val : fallback;
+    } catch (NumberFormatException e) {
+      return fallback;
+    }
   }
 }

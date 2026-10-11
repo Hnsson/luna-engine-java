@@ -17,7 +17,7 @@ public class Tool {
   private Tools currentTool;
 
   public Tool() {
-    this.currentTool = Tools.SELECT;
+    this.currentTool = Tools.PAINT;
   }
 
   public Tools getActiveTool() {

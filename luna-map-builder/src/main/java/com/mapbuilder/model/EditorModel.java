@@ -20,6 +20,7 @@ public class EditorModel {
 
   public EditorModel() {
     this.listeners = new ArrayList<EditorModelListener>();
+    this.currentTool = new Tool();
   }
 
   public void registerListener(EditorModelListener listener) {
@@ -74,4 +75,13 @@ public class EditorModel {
       listener.onTilesetLoaded(this.loadedTextureRegion, this.tileWidth, this.tileHeight);
     }
   }
+
+  public void beautyPrint() {
+    System.out.println("Current tool:\t\t\t" + currentTool.getActiveTool());
+    System.out.println("(tileWidth, tileHeight):\t" + "(" + tileWidth + ", " + tileHeight + ")");
+    System.out.println("selectedTileId:\t\t\t" + selectedTileId);
+
+    System.out.println();
+  }
+
 }
