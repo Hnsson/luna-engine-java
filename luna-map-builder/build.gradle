@@ -4,16 +4,30 @@ plugins {
 
 ext {
   gdxVersion = '1.14.0'
+  lwjglVersion = '3.4.3'
 }
 
 application {
-    mainClass = 'com.mapbuilder.DesktopLauncher'
+  mainClass = 'com.mapbuilder.DesktopLauncher'
+}
+
+configurations.all {
+  resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+    if (details.requested.group == 'org.lwjgl') {
+      details.useVersion '3.4.3'
+    }
+  }
 }
 
 dependencies {
-    implementation project(':luna-core')
-    implementation project(':luna-libgdx')
+  implementation project(':luna-core')
+  implementation project(':luna-libgdx')
 
-    implementation "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
-    implementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+  implementation "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
+  implementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+
+  implementation "org.lwjgl:lwjgl-tinyfd:$lwjglVersion"
+  runtimeOnly "org.lwjgl:lwjgl-tinyfd:${lwjglVersion}:natives-linux"
+  runtimeOnly "org.lwjgl:lwjgl-tinyfd:${lwjglVersion}:natives-windows"
+  runtimeOnly "org.lwjgl:lwjgl-tinyfd:${lwjglVersion}:natives-macos"
 }

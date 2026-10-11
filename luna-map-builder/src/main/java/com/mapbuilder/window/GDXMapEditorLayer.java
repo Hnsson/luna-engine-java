@@ -14,6 +14,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.SplitPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.SplitPane.SplitPaneStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane.ScrollPaneStyle;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.engine.fsm.states.WindowLayer;
@@ -45,13 +48,15 @@ public class GDXMapEditorLayer extends WindowLayer {
     this.palettePanel = new PalettePanel(model, skin);
     this.canvasPanel = new CanvasPanel(model);
 
+    model.registerListener(this.palettePanel);
+
     Table rootTable = new Table();
     rootTable.setFillParent(true);
 
     SplitPane split = new SplitPane(palettePanel, canvasPanel, false, skin);
-    split.setSplitAmount(0.20f); // 20% left, 80% right
-    split.setMinSplitAmount(0.15f);
-    split.setMaxSplitAmount(0.40f);
+    split.setSplitAmount(0.30f); // 20% left, 80% right
+    split.setMinSplitAmount(0.25f);
+    split.setMaxSplitAmount(0.50f);
 
     rootTable.add(split).grow();
     stage.addActor(rootTable);
@@ -121,6 +126,31 @@ public class GDXMapEditorLayer extends WindowLayer {
     skin.add("default-horizontal", splitStyle);
     skin.add("default-vertical", splitStyle);
     skin.add("panel-palette", baseDrawable.tint(new Color(0.14f, 0.15f, 0.18f, 1f)));
+
+    // ScrollPane
+    ScrollPane.ScrollPaneStyle scrollStyle = new ScrollPane.ScrollPaneStyle();
+    scrollStyle.background = baseDrawable.tint(new Color(0.11f, 0.12f, 0.14f, 1f));
+
+    Drawable vScrollTrack = baseDrawable.tint(new Color(0.18f, 0.19f, 0.22f, 1f));
+    vScrollTrack.setMinWidth(6f);
+    scrollStyle.vScroll = vScrollTrack;
+
+    Drawable vScrollKnob = baseDrawable.tint(new Color(0.35f, 0.37f, 0.44f, 1f));
+    vScrollKnob.setMinWidth(6f);
+    scrollStyle.vScrollKnob = vScrollKnob;
+
+    Drawable hScrollTrack = baseDrawable.tint(new Color(0.18f, 0.19f, 0.22f, 1f));
+    hScrollTrack.setMinHeight(6f);
+    scrollStyle.hScroll = hScrollTrack;
+
+    Drawable hScrollKnob = baseDrawable.tint(new Color(0.35f, 0.37f, 0.44f, 1f));
+    hScrollKnob.setMinHeight(6f);
+    scrollStyle.hScrollKnob = hScrollKnob;
+
+    Drawable selectionBorder = baseDrawable.tint(new Color(0.42f, 0.73f, 0.92f, 1f));
+
+    skin.add("default", scrollStyle);
+    skin.add("tile-selected-border", selectionBorder, Drawable.class);
 
     // Label
     Label.LabelStyle labelStyle = new Label.LabelStyle(font, Color.WHITE);
